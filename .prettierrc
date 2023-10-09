@@ -1,0 +1,20 @@
+{
+  "endOfLine": "lf",
+  "arrowParens": "avoid",
+  "bracketSameLine": true,
+  "bracketSpacing": true,
+  "trailingComma": "all",
+  "semi": true,
+  "useTabs": false,
+  "printWidth": 100,
+  "tabWidth": 2,
+  "singleQuote": true,
+  "singleAttributePerLine": false,
+  "embeddedLanguageFormatting": "auto",
+  "pluginSearchDirs": ["."],
+  "quoteProps": "as-needed",
+  "proseWrap": "always",
+  "overrides": [
+    { "files": ["*.json", ".prettierrc"], "options": { "parser": "json", "tabWidth": 2 } }
+  ]
+}

@@ -1,0 +1,26 @@
+name: 🐞 Bug report
+description: Create a report to help us improve
+labels: [bug]
+body:
+  - type: input
+    attributes:
+      label: Package and Node.js versions
+      description: see `package.json` and run `node -v`
+  - type: input
+    attributes:
+      label: Platform
+      description: output of `uname -a`
+  - type: textarea
+    attributes:
+      label: Describe the problem
+      description: A clear and concise description of what the problem is.
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: To Reproduce
+      description: Steps to reproduce the behavior. Usage example or test.
+  - type: textarea
+    attributes:
+      label: Screenshots
+      description: If applicable, add screenshots to help explain your problem.

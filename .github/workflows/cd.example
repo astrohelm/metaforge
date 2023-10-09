@@ -1,0 +1,39 @@
+name: Deploy
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build with Node.js 20
+      uses: actions/setup-node@v3
+      with:
+      node-version: 20
+      cache: 'npm'
+    - run: npm ci
+    - run: npm run build
+    - name: Configure SSH
+      run: |
+      mkdir -p ~/.ssh/
+      echo "$SSH_KEY" > ~/.ssh/staging.key
+      chmod 600 ~/.ssh/staging.key
+      cat >>~/.ssh/config <<END
+      Host prod_server
+        HostName $SSH_HOST
+        User $SSH_USER
+        Port $SSH_PORT
+        IdentityFile ~/.ssh/staging.key
+        StrictHostKeyChecking no
+      END
+      env:
+      SSH_USER: ${{ secrets.USERNAME }}
+      SSH_KEY: ${{ secrets.SSH_KEY }}
+      SSH_HOST: ${{ secrets.HOSTNAME }}
+      SSH_PORT: ${{ secrets.PORT }}
+    - name: Deploy to VPS with SSH
+      run: rsync -avrzh --update --delete ./build/ ${{ secrets.USERNAME }}@prod_server:${{ secrets.DEPLOY_DIR }}

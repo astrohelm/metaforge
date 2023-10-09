@@ -1,0 +1,55 @@
+{
+  "license": "MIT",
+  "version": "1.2.0",
+  "type": "commonjs",
+  "name": "astrohelm-workspace",
+  "homepage": "https://astrohelm.ru",
+  "description": "Astrohelm workspace example",
+  "author": "Alexander Ivanov <sashapop101@gmail.com>",
+  "keywords": [
+    "nodejs",
+    "zero-dependencies",
+    "prettier",
+    "eslint",
+    "ts",
+    "workspace",
+    "example",
+    "preset",
+    "starter-kit",
+    "astrohelm",
+    "javascript",
+    "typescript"
+  ],
+
+  "main": "index.js",
+  "types": "types/index.d.ts",
+  "packageManager": "npm@9.6.4",
+  "readmeFilename": "README.md",
+  "engines": { "node": "18 || 19 || 20" },
+  "browser": {},
+  "files": ["/dist", "/lib", "/types"],
+
+  "scripts": {
+    "test": "node --test && tsc",
+    "dev": "node index.js",
+    "prettier:fix": "prettier --write \"**/*.{js,ts,json,html,cjs,md,yaml}\"",
+    "eslint:fix": "eslint --fix \"**/*.{js,ts}\""
+  },
+
+  "repository": { "type": "git", "url": "git+https://github.com/astrohelm/node-workspace.git" },
+  "bugs": {
+    "url": "https://github.com/astrohelm/node-workspace/issues",
+    "email": "sashapop101@gmail.com"
+  },
+
+  "devDependencies": {
+    "@types/node": "^20.5.3",
+    "eslint": "^8.40.0",
+    "eslint-config-astrohelm": "^1.1.1",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-prettier": "^5.0.0",
+    "prettier": "^3.0.2",
+    "typescript": "^5.0.2"
+  }
+}
