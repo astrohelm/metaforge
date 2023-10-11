@@ -1,5 +1,7 @@
 'use strict';
 
-const lib = require('./lib');
-
-module.exports = { lib };
+test: {
+  console.log(1);
+  if (true) break test;
+  console.log(2)
+}
