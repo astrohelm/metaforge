@@ -10,6 +10,7 @@
 - DOCS & Typings & JSDoc [issue](https://github.com/astrohelm/astroplan/issues/11)
 - Custom checks (rules) [issue](https://github.com/astrohelm/astroplan/issues/7)
 - FS utilities [issue](https://github.com/astrohelm/astroplan/issues/9)
+- Allow custom types, schemas and rules to return value of string, boolean and SchemaError types;
 
 ## [0.1.0][] - 2023-10-16
 

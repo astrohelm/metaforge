@@ -1,9 +1,8 @@
-//TODO: #1 Rules & Tests
-//TODO: #2 Parser for samples
-//TODO: #3 Typescript code generation
-//TODO: #4 FS UTilities
-//TODO: #5 Types
-//TODO: #6 README
+//TODO: #1 Parser for samples
+//TODO: #2 Typescript code generation
+//TODO: #3 FS UTilities
+//TODO: #4 Types
+//TODO: #5 README
 
 type Condition = 'allof' | 'anyof' | 'oneof';
 type TypeField = { type: Type | Type[]; condition?: Condition };
