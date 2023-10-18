@@ -1,10 +1,10 @@
 {
   "license": "MIT",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "commonjs",
-  "name": "astroplan",
+  "name": "metaforge",
   "homepage": "https://astrohelm.ru",
-  "description": "Astrohelm workspace example",
+  "description": "Library for runtime data validation by metadata",
   "author": "Alexander Ivanov <sashapop101@gmail.com>",
   "keywords": [
     "nodejs",
@@ -40,10 +40,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/astrohelm/node-workspace.git"
+    "url": "git+https://github.com/astrohelm/metaforge.git"
   },
   "bugs": {
-    "url": "https://github.com/astrohelm/node-workspace/issues",
+    "url": "https://github.com/astrohelm/metaforge/issues",
     "email": "sashapop101@gmail.com"
   },
   "devDependencies": {
