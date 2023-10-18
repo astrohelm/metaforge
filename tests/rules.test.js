@@ -11,6 +11,5 @@ test('Rules', () => {
   assert.strictEqual(schema.warnings.length, 0);
   assert.strictEqual(schema.test().length, 3); //? Required + two rules
   assert.strictEqual(schema.test('Test').length, 1); //? One rule
-  console.log(schema.test('Hello world'));
   assert.strictEqual(schema.test('Hello world').length, 0);
 });
