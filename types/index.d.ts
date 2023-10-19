@@ -1,4 +1,4 @@
-//TODO: #1 Parser for samples
+//TODO: #1 enum, tuple, date prototypes / Code cleanup
 //TODO: #2 Typescript code generation
 //TODO: #3 FS UTilities
 //TODO: #4 Types

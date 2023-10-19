@@ -71,5 +71,8 @@ test('Generate schema from array of objects', () => {
     ],
   };
   const plan = Schema.parse(sample);
+  const schema = new Schema(plan);
+  const errors = schema.test(sample);
   assert.deepStrictEqual(plan, expected);
+  assert.strictEqual(errors.length + schema.warnings.length, 0);
 });

@@ -12,6 +12,9 @@ test('Schema with errors & warnings', () => {
       c: { type: 'object', properties: { z: 'string' } },
       z: 'string',
       z2: '?string',
+      season: { type: 'enum', enum: ['winter', 'spring', 'autumn', 'summer'] },
+      room: { type: 'enum', enum: [1, 2, 3, 4] },
+      room2: 'enum', //? +1 [Warning] Shorthand enum (enum is scalar)
     },
     patternProperties: {
       '^[a-z]+': 'string',
@@ -22,21 +25,23 @@ test('Schema with errors & warnings', () => {
     b: new Set(['a', 'b', 'c']), //? +1 [Warning] Shorthand non-scalar
     c: { z: 'string', a: true }, //? +1 [Error] Exotic
     hello: 'world',
+    season: 'today', //? +1 [Error] Not at enum
+    room: 5, //? +1 [Error] Not at enum
     123: 'test', //? +2 [Error] Exoitic, Missing field "z"
   };
   const schema = new Schema(plan);
-  assert.strictEqual(schema.warnings.length, 1);
+  assert.strictEqual(schema.warnings.length, 2);
   const { cause, message, path } = schema.warnings[0];
   assert.strictEqual(path, 'PREPROCESS');
   assert.strictEqual(cause, 'Shorthand usage with non-scalar schema');
   assert.strictEqual(message, '[PREPROCESS] => Shorthand usage with non-scalar schema');
   const errors = schema.test(sample);
-  assert.strictEqual(errors.length, 4);
+  assert.strictEqual(errors.length, 6);
 });
 
 test('Schema without errors & warnings', () => {
   const plan = {
-    type: 'object',
+    type: 'map',
     properties: {
       a: ['number', 'string'], //? anyof
       b: { type: 'set', items: ['?string', 'any', 'unknown'], condition: 'allof' },
@@ -51,20 +56,31 @@ test('Schema without errors & warnings', () => {
       z: 'string',
       z2: '?string', //? not required
       z3: { type: 'string', required: false },
+      z4: { type: 'string', preprocess: () => 'Required' }, //? Default value
+      z5: {
+        type: 'array',
+        items: [{ type: 'number', postprocess: v => v * 2 }], //? This process wont work
+        preprocess: () => [1, 2, 3, 4],
+      },
+      season: { type: 'enum', enum: ['winter', 'spring', 'autumn', 'summer'] },
     },
     patternProperties: {
-      '^[a-z]+': 'string',
+      '^[a-z]+': { type: 'string', postprocess: v => v + ' !' },
     },
   };
-  const sample = {
-    a: 'test',
-    b: new Set(['a', 'b', 'c']),
-    c: { z: 'string', d: [1, 'test'] },
-    hello: 'world',
-    z: 'test',
-  };
+  const sample = new Map(
+    Object.entries({
+      a: 'test',
+      b: new Set(['a', 'b', 'c']),
+      c: { z: 'string', d: [1, 'test'] },
+      hello: 'world',
+      z: 'test',
+      season: 'winter',
+    }),
+  );
   const schema = new Schema(plan);
   assert.strictEqual(schema.warnings.length, 0);
   const errors = schema.test(sample);
+  console.log(errors, sample);
   assert.strictEqual(errors.length, 0);
 });
