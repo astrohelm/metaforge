@@ -2,15 +2,24 @@
 
 ## [Unreleased][unreleased]
 
-<!--
-## [0.3.0][] - 2023-10-1\*
+<!-- ## [1.0.0][] - 2023-10-1\*
 
-- Plan generation from sample [issue](https://github.com/astrohelm/astroplan/issues/10)
 - Typescript types generation [issue](https://github.com/astrohelm/astroplan/issues/5)
-- DOCS & Typings & JSDoc [issue](https://github.com/astrohelm/astroplan/issues/11)
-- FS utilities [issue](https://github.com/astrohelm/astroplan/issues/9) -->
+- FS utilities [issue](https://github.com/astrohelm/astroplan/issues/9)
+- Plan generation from sample [issue](https://github.com/astrohelm/astroplan/issues/10)
+- DOCS & Typings & JSDoc [issue](https://github.com/astrohelm/astroplan/issues/11) -->
 
-## [0.2.0][] - 2023-10-1\*
+## [0.3.0][] - 2023-10-19
+
+- Schema child method, now you can update only schema or only options for new schemas
+- Metadata fetcher, now you can gather all metadata by <code>schema.meta</code>
+- Fixed case when schema returns only methods without metadata, now it returns prototypes key with
+  all metadata
+- Preprocess & postprocess for objects properties mutations
+- New prototype <code>enum</code>
+- Code cleanup & tests
+
+## [0.2.0][] - 2023-10-18
 
 - Renamed astroplan -> metaforge
 - Meta information & Builded tree export [issue](https://github.com/astrohelm/astroplan/issues/8)
@@ -29,6 +38,7 @@
 - Default exotic types: Any, Undefined, JSON
 - Custom Errors
 
-[unreleased]: https://github.com/astrohelm/workspace/compare/v0.2.0...HEAD
-[0.2.0]: https://github.com/astrohelm/workspace/releases/tag/v0.2.0
-[0.1.0]: https://github.com/astrohelm/workspace/releases/tag/release
+[unreleased]: https://github.com/astrohelm/metaforge/compare/v0.2.0...HEAD
+[0.3.0]: https://github.com/astrohelm/metaforge/compare/v0.2.0...v0.3.0
+[0.2.0]: https://github.com/astrohelm/metaforge/compare/v0.1.0...v0.2.0
+[0.1.0]: https://github.com/astrohelm/metaforge/releases/tag/v0.1.0

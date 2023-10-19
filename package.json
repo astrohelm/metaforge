@@ -1,10 +1,10 @@
 {
   "license": "MIT",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "type": "commonjs",
   "name": "metaforge",
   "homepage": "https://astrohelm.ru",
-  "description": "Library for runtime data validation by metadata",
+  "description": "Library that allow you to describe data structures by subset of JavaScript syntax and validate them at runtime",
   "author": "Alexander Ivanov <sashapop101@gmail.com>",
   "keywords": [
     "nodejs",
@@ -33,7 +33,7 @@
   "browser": {},
   "files": ["/lib", "/types"],
   "scripts": {
-    "test": "node --test",
+    "test": "clear && node --test",
     "dev": "node index.js",
     "prettier:fix": "prettier --write \"**/*.{js,ts,json,html,cjs,md,yaml}\"",
     "eslint:fix": "eslint --fix \"**/*.{js,ts}\""
