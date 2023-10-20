@@ -2,15 +2,14 @@
 
 ## [Unreleased][unreleased]
 
-<!-- ## [1.0.0][] - 2023-10-1\*
+<!-- ## [1.0.0][] - 2023-10-2\*
 
 - Typescript types generation [issue](https://github.com/astrohelm/astroplan/issues/5)
-- FS utilities [issue](https://github.com/astrohelm/astroplan/issues/9)
-- Plan generation from sample [issue](https://github.com/astrohelm/astroplan/issues/10)
 - DOCS & Typings & JSDoc [issue](https://github.com/astrohelm/astroplan/issues/11) -->
 
 ## [0.3.0][] - 2023-10-19
 
+- Plan generation from sample [issue](https://github.com/astrohelm/astroplan/issues/10)
 - Schema child method, now you can update only schema or only options for new schemas
 - Metadata fetcher, now you can gather all metadata by <code>schema.meta</code>
 - Fixed case when schema returns only methods without metadata, now it returns prototypes key with
@@ -38,7 +37,7 @@
 - Default exotic types: Any, Undefined, JSON
 - Custom Errors
 
-[unreleased]: https://github.com/astrohelm/metaforge/compare/v0.2.0...HEAD
+[unreleased]: https://github.com/astrohelm/metaforge/compare/v0.3.0...HEAD
 [0.3.0]: https://github.com/astrohelm/metaforge/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/astrohelm/metaforge/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/astrohelm/metaforge/releases/tag/v0.1.0

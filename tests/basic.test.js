@@ -42,6 +42,7 @@ test('Schema with errors & warnings', () => {
 test('Schema without errors & warnings', () => {
   const plan = {
     type: 'map',
+    preprocess: v => ({ ...v, test: 123 }), //? This process wont work
     properties: {
       a: ['number', 'string'], //? anyof
       b: { type: 'set', items: ['?string', 'any', 'unknown'], condition: 'allof' },
@@ -63,6 +64,7 @@ test('Schema without errors & warnings', () => {
         preprocess: () => [1, 2, 3, 4],
       },
       season: { type: 'enum', enum: ['winter', 'spring', 'autumn', 'summer'] },
+      users: { type: 'array', items: 'string' },
     },
     patternProperties: {
       '^[a-z]+': { type: 'string', postprocess: v => v + ' !' },
@@ -76,11 +78,11 @@ test('Schema without errors & warnings', () => {
       hello: 'world',
       z: 'test',
       season: 'winter',
+      users: ['sashapop10', 'expertrix', 'alexander'],
     }),
   );
   const schema = new Schema(plan);
   assert.strictEqual(schema.warnings.length, 0);
   const errors = schema.test(sample);
-  console.log(errors, sample);
   assert.strictEqual(errors.length, 0);
 });

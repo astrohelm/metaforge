@@ -1,8 +1,12 @@
-//TODO: #1 enum, tuple, date prototypes / Code cleanup
-//TODO: #2 Typescript code generation
-//TODO: #3 FS UTilities
-//TODO: #4 Types
-//TODO: #5 README
+//TODO: Root link, root path, wrap value in object to update it (possible to do calculated fields) / Or remove that processing
+//TODO: String rules, pass realization through Schema constructor, rename rules -> validate, possisble to pass only one method / string
+//TODO: String for preprocess, postprocess
+//TODO: Tuple, Date
+//TODO: Custom prototype inheritance
+//TODO: Plans join ?
+
+//TODO: #1 Typescript code generation
+//TODO: #2 Types & README
 
 type Condition = 'allof' | 'anyof' | 'oneof';
 type TypeField = { type: Type | Type[]; condition?: Condition };

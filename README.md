@@ -1,4 +1,4 @@
-<h1 align="center">MetaForge v0.3.0 🕵️</h1>
+<h1 align="center">MetaForge v0.4.0 🕵️</h1>
 
 <p align="center">
 Copyright © 2023 <a href="https://github.com/astrohelm/metaforge/graphs/contributors">Astrohelm contributors</a>.
