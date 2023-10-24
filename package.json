@@ -33,7 +33,7 @@
   "browser": {},
   "files": ["/lib", "/types"],
   "scripts": {
-    "test": "clear && node --test",
+    "test": "node --test",
     "dev": "node index.js",
     "prettier:fix": "prettier --write \"**/*.{js,ts,json,html,cjs,md,yaml}\"",
     "eslint:fix": "eslint --fix \"**/*.{js,ts}\""
