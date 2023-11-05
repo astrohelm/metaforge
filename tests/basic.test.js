@@ -3,86 +3,60 @@
 const [test, assert] = [require('node:test'), require('node:assert')];
 const Schema = require('..');
 
-test('Schema with errors & warnings', () => {
-  const plan = {
-    type: 'object',
-    properties: {
-      a: ['number'],
-      b: { type: 'set', items: ['array'], condition: 'anyof' },
-      c: { type: 'object', properties: { z: 'string' } },
-      z: 'string',
-      z2: '?string',
-      season: { type: 'enum', enum: ['winter', 'spring', 'autumn', 'summer'] },
-      room: { type: 'enum', enum: [1, 2, 3, 4] },
-      room2: 'enum', //? +1 [Warning] Shorthand enum (enum is scalar)
-    },
-    patternProperties: {
-      '^[a-z]+': 'string',
-    },
-  };
-  const sample = {
-    a: 'test', //? +1 [Error] Type missmatch
-    b: new Set(['a', 'b', 'c']), //? +1 [Warning] Shorthand non-scalar
-    c: { z: 'string', a: true }, //? +1 [Error] Exotic
-    hello: 'world',
-    season: 'today', //? +1 [Error] Not at enum
-    room: 5, //? +1 [Error] Not at enum
-    123: 'test', //? +2 [Error] Exoitic, Missing field "z"
-  };
-  const schema = new Schema(plan);
-  assert.strictEqual(schema.warnings.length, 2);
-  const { cause, message, path } = schema.warnings[0];
-  assert.strictEqual(path, 'PREPROCESS');
-  assert.strictEqual(cause, 'Shorthand usage with non-scalar schema');
-  assert.strictEqual(message, '[PREPROCESS] => Shorthand usage with non-scalar schema');
-  const errors = schema.test(sample);
-  assert.strictEqual(errors.length, 6);
-});
-
 test('Schema without errors & warnings', () => {
-  const plan = {
-    type: 'map',
-    preprocess: v => ({ ...v, test: 123 }), //? This process wont work
-    properties: {
-      a: ['number', 'string'], //? anyof
-      b: { type: 'set', items: ['?string', 'any', 'unknown'], condition: 'allof' },
-      c: {
-        type: 'object',
-        properties: {
-          z: 'string',
-          //? Required shorthand don't work at array items
-          d: { type: 'array', items: ['?number', '?string'], condition: 'oneof' },
-        },
-      },
-      z: 'string',
-      z2: '?string', //? not required
-      z3: { type: 'string', required: false },
-      z4: { type: 'string', preprocess: () => 'Required' }, //? Default value
-      z5: {
-        type: 'array',
-        items: [{ type: 'number', postprocess: v => v * 2 }], //? This process wont work
-        preprocess: () => [1, 2, 3, 4],
-      },
-      season: { type: 'enum', enum: ['winter', 'spring', 'autumn', 'summer'] },
-      users: { type: 'array', items: 'string' },
+  const userSchema = new Schema({
+    $id: 'UserSchema',
+    phone: { $type: 'union', types: ['number', 'string'] }, //? anyof tyupe
+    name: { $type: 'set', items: ['string', '?string'] }, //? set tuple
+    mask: { $type: 'array', items: 'string' }, //? array
+    ip: {
+      $id: 'IpSchema',
+      $type: 'array',
+      $required: false,
+      $rules: [ip => ip[0] === '192'], //? custom rules
+      items: { $type: 'union', types: ['string', '?number'], condition: 'oneof', $required: false },
     },
-    patternProperties: {
-      '^[a-z]+': { type: 'string', postprocess: v => v + ' !' },
-    },
-  };
-  const sample = new Map(
-    Object.entries({
-      a: 'test',
-      b: new Set(['a', 'b', 'c']),
-      c: { z: 'string', d: [1, 'test'] },
-      hello: 'world',
-      z: 'test',
-      season: 'winter',
-      users: ['sashapop10', 'expertrix', 'alexander'],
+    type: ['elite', 'member', 'guest'], //? enum
+    adress: 'string',
+    secondAdress: '?string',
+    associations: new Schema({
+      $id: 'UserID',
+      '[a-z]+Id': { $type: 'number', isPattern: true },
     }),
-  );
-  const schema = new Schema(plan);
-  assert.strictEqual(schema.warnings.length, 0);
-  const errors = schema.test(sample);
-  assert.strictEqual(errors.length, 0);
+    options: { notifications: 'boolean', lvls: ['number', 'string'] },
+  });
+
+  const sample = [
+    {
+      phone: '7(***)...',
+      ip: ['192', 168, '1', null],
+      type: 'elite',
+      mask: ['255', '255', '255', '0'],
+      name: new Set(['Alexander', null]),
+      options: { notifications: true, lvls: [2, '["admin", "user"]'] },
+      associations: { userId: 1, recordId: 1, dbId: 1 },
+      adress: 'Pushkin street',
+    },
+    {
+      phone: 79999999999,
+      type: 'guest',
+      mask: ['255', '255', '255', '0'],
+      name: new Set(['Alexander', 'Ivanov']),
+      options: { notifications: false, lvls: [2, '["admin", "user"]'] },
+      associations: { userId: 2, recordId: 2, dbId: 2 },
+      adress: 'Pushkin street',
+    },
+  ];
+
+  const systemSchema = new Schema({ $type: 'array', items: userSchema });
+  const ipSchema = systemSchema.pull('IpSchema');
+  const usSchema = systemSchema.pull('UserSchema');
+  const UserID = systemSchema.pull('UserID');
+  assert.strictEqual(systemSchema.warnings.length, 0);
+  assert.strictEqual(userSchema.warnings.length, 0);
+  assert.strictEqual(UserID.test(sample[0].associations).valid, true);
+  assert.strictEqual(ipSchema.test(sample[0].ip).valid, true);
+  assert.strictEqual(usSchema.test(sample[0]).valid, true);
+  assert.strictEqual(userSchema.test(sample[0]).valid, true);
+  assert.strictEqual(systemSchema.test(sample).valid, true);
 });

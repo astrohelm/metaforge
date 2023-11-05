@@ -2,10 +2,50 @@
 
 ## [Unreleased][unreleased]
 
-<!-- ## [1.0.0][] - 2023-10-2\*
+## [0.4.0][] - 2023-11-05
 
-- Typescript types generation [issue](https://github.com/astrohelm/astroplan/issues/5)
-- DOCS & Typings & JSDoc [issue](https://github.com/astrohelm/astroplan/issues/11) -->
+- Support latest:21 node version
+- Removed parser (maybe temporary)
+- TypeScript .d.ts support
+- Schema field with multiple type variants now works only with special type <code>union</code>
+- Modular mechanism (internal rework): **How it works**
+
+  ```js
+  const schema = new Schema();
+  schema.register((schema, options, plan) => {}); //? Register new module
+  ```
+
+  By default registrated modules are:
+
+  - Metatest module (Adds tests for prototypes)
+  - Metatype module (Typescript parser)
+  - Handyman (Quality of life module)
+
+  But you also remove default modules:
+
+  ```js
+  Schema.modules.delete('metatest');
+  ```
+
+- New shorthands for:
+  - enum example: <code>['winter', 'spring', 'summer, 'autumn']</code>
+  - tuple example: <code>['string', 'number']</code>
+  - object example: <code>{ a: string, b: number }</code>
+  - string example: <code>'string'</code>
+  - schema example: <code>'MyGlobalSchema'</code>
+  - schema#2 example: <code>new Schema('string')</code>
+- Removed preprocessor mechanism
+- Schemas now can be part of plan
+- Performance improvements (by removing unnecessary modules)
+- Lightweight inheritance
+- Removed type JSON (temporary)
+- Prototype chaining
+- Partial testing
+- New prototypes:
+  - Tuple
+  - Record
+  - Schema
+  - Union
 
 ## [0.3.0][] - 2023-10-19
 
