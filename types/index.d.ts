@@ -1,50 +1,81 @@
-//TODO: #1 enum, tuple, date prototypes / Code cleanup
-//TODO: #2 Typescript code generation
-//TODO: #3 FS UTilities
-//TODO: #4 Types
-//TODO: #5 README
+class SchemaError {
+  constructor(options: { pattern: (dict: { [key: string]: string }) => string }) {}
+  plan: unknown;
+  message: string;
+  path: string;
+  sample: unknown;
+  sampleType: string;
+  cause: string;
+}
 
-type Condition = 'allof' | 'anyof' | 'oneof';
-type TypeField = { type: Type | Type[]; condition?: Condition };
-type Rule = (sample: unknown, tools: Tools) => SchemaError[];
-type Type = string | TypeObject;
+type Rule = 'string' | ((sample: string, path?: string, partial?: boolean) => unknown);
+interface PlanCore {
+  $meta?: { [key: string]: unknown };
+  $rules?: Array<Rule> | Rule;
+  $required?: boolean;
+  $type?: string;
+  $id?: string;
+  [key: string]: unknown;
+}
+
+interface Options {
+  errorPattern?: (dict: { [key: string]: string }) => string;
+  rules?: Map<string, Rule> | { [key: string]: Rule };
+  namespace?: Map<string, Schema> | { [key: string]: Rule };
+}
 
 interface Tools {
-  Error: SchemaError;
-  isRequired: (plan: string) => boolean;
-  isShorthand: (plan: ) => boolean;
-  typeOf: (plan: ) => Type[];
+  Error: typeof SchemaError;
+  build: (plan: Plan) => ProtoObject;
+  warn: (opts: {
+    path?: string;
+    cause: string;
+    sample: unknown;
+    sampleType: string;
+  }) => SchemaError;
 }
 
-interface TypeObject {
-  type: string;
-  rules?: [];
-  meta?: { [key: string]: unknown };
+type ProtoObject = { construct?: ProtoFunction; [key: string]: unknown };
+type ProtoFunction = (plan: Plan, tools: Tools, isPartial?: boolean) => object;
+class ProtoClass implements ProtoObject {
+  constructor(plan: Plan, tools: Tools, isPartial?: boolean) {}
+  [key: string]: unknown;
+}
+type Proto = ProtoClass | ProtoFunction | ProtoObject;
+
+class ForgePrototype {
+  $id?: string;
+  $kind: string;
+  $type: string;
+  $required: boolean;
+  $plan: Plan;
+  test?: (
+    sample: unknown,
+    root?: string,
+    partial?: boolean,
+  ) => Array<SchemaError> & { valid: boolean };
+  toTypescript?: () => string;
+  [key: string]: unknown;
 }
 
-interface SchemaError {}
-interface TOptions {
-  errorPattern?: string;
+class Forge {
+  constructor(schema: Schema, prototypes?: Map<string, Proto>) {}
+  attach: (name: string, ...prototypes: Proto[]) => void;
+  get: (name: string) => { new (plan: Plan): ForgePrototype };
+  has: (name: string) => boolean;
 }
 
-interface TObject {
-  type: 'map' | 'object';
-  properties: { [key: unknown]: TypeField };
-  patternProperties: { [key: unknown]: TypeField };
-}
-
-interface TArray {
-  type: 'set' | 'array';
-  items: Array<Type>;
-  condition: Condition;
-}
-
-export default class Schema {
-  kind?: 'struct' | 'scalar' | 'any';
-  subtype?: string;
-  type?: string;
+type TModule = (schema: Schema, options: Options, plan: Plan) => void;
+type Plan = string | PlanCore | Schema;
+class Schema extends ForgePrototype {
+  forge: Forge;
+  modules: Map<string, undefined>;
   warnings: Array<SchemaError>;
-  constructor(plan: string | TType, options?: TOptions);
-  test: (sample: unknown, root?: string) => Array<SchemaError>;
-  [key: string]: string;
+  tools: Tools;
+  constructor(plan: Plan, options?: Options) {}
+  pull: (name: string) => Schema | null;
+  register: (name: string, module: TModule) => void;
+  [key: string]: unknown;
 }
+
+export = Schema;
