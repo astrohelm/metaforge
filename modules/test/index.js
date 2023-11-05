@@ -11,13 +11,6 @@ module.exports = (schema, options) => {
   for (const [name, proto] of prototypes.entries()) schema.forge.attach(name, proto);
   const schemaRules = options.rules ? new Map(objectEntries('any', options.rules)) : new Map();
   const Error = schema.tools.Error;
-  schema.test = (sample, path = 'root', isPartial = false) => {
-    const err = (def, cause = def) => new Error({ cause, path, plan: schema.$plan, sample });
-    const result = schema.test(sample, path, isPartial);
-    const flat = unifyResult(result, err.bind(null, DID_NOT_PASSED));
-    flat.valid = flat.length === 0;
-    return flat;
-  };
 
   function TestWrapper(plan) {
     if (plan.$type === 'schema') return this.test.bind(this);
@@ -25,11 +18,15 @@ module.exports = (schema, options) => {
     const rules = Array.isArray(planRules) ? planRules : [planRules];
     const tests = rules.filter(test => typeof test === 'string' || typeof test === 'function');
     typeof this.test === 'function' && tests.unshift(this.test.bind(this));
-    this.test = (sample, path, isPartial) => {
-      if (sample === undefined || sample === null) return !this.$required ? [] : [REQUIRE_SAMPLE];
-      const err = (def, cause = def) => new Error({ cause, path, plan, sample });
+    this.test = (sample, path = 'root', isPartial = false) => {
+      if (sample === undefined || sample === null) {
+        if (!this.$required) return [];
+        return [new Error({ cause: REQUIRE_SAMPLE, path, plan, sample })];
+      }
+
       const errors = [];
       for (let i = 0; i < tests.length; i++) {
+        const err = (def, cause = def) => new Error({ cause, path, plan, sample });
         let [rule, name] = [tests[i], i - 1 < 0 ? 'Prototype test' : 'Rule №' + i];
         if (typeof rule === 'string') [rule, name] = [schemaRules.get(rule), rule];
         if (rule) {
@@ -39,7 +36,9 @@ module.exports = (schema, options) => {
         }
         errors.push(err(RULE_NOT_EXIST + name));
       }
-      return errors;
+
+      const result = unifyResult(errors);
+      return Object.assign(result, { valid: result.length === 0 });
     };
   }
 };
