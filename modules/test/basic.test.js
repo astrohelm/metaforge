@@ -1,7 +1,7 @@
 'use strict';
 
 const [test, assert] = [require('node:test'), require('node:assert')];
-const Schema = require('..');
+const Schema = require('../..');
 
 test('Schema without errors & warnings', () => {
   const userSchema = new Schema({

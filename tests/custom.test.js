@@ -36,3 +36,11 @@ test('Custom prototypes with meta replacement for old ones', () => {
   assert.strictEqual(numberSchema.about, 'This Number is awsome');
   assert.strictEqual(numberSchema.desc, 'age');
 });
+
+test('Custom modules', () => {
+  let counter = 0;
+  const plugin = () => counter++;
+  Schema.modules.set('first', plugin);
+  new Schema().register('second', plugin);
+  assert.strictEqual(counter, 2);
+});

@@ -1,4 +1,4 @@
-<h1 align="center">MetaForge v0.5.0 🕵️</h1>
+<h1 align="center">MetaForge v0.6.0 🕵️</h1>
 
 ## Describe your data structures by subset of JavaScript and:
 
@@ -20,7 +20,7 @@ npm i metaforge --save
 const userSchema = new Schema({
   $id: 'userSchema',
   $meta: { name: 'user', description: 'schema for users testing' },
-  phone: { $type: 'union', types: ['number', 'string'] }, //? anyof tyupe
+  phone: { $type: 'union', types: ['number', 'string'] }, //? number or string
   name: { $type: 'set', items: ['string', '?string'] }, //? set tuple
   mask: { $type: 'array', items: 'string' }, //? array
   ip: {
@@ -50,7 +50,7 @@ const sample = [
   //...
 ];
 
-systemSchema.warnings; // inspect after build warnings
+systemSchema.warnings; // Inspect warnings after build
 systemSchema.test(sample); // Shema validation
 systemSchema.toTypescript('system'); // Typescript generation
 systemSchema.pull('userSchema').test(sample[0]); // Subschema validation
@@ -60,14 +60,14 @@ systemSchema.pull('userSchema'); // Metadata: {..., name: 'user', description: '
 
 ## Docs
 
-- [About modules](./docs/modules.md#modules-or-another-words-plugins)
+- ### [About modules / plugins](./docs/modules.md#modules-or-another-words-plugins)
+  - [Writing custom modules](./docs/modules.md#writing-custom-modules)
+  - [Metatype](./modules/types/README.md) | generate type annotations from schema
   - [Handyman](./modules/handyman/README.md) | quality of life module
   - [Metatest](./modules/test/README.md) | adds prototype testing
-  - [Metatype](./modules/types/README.md) | generate typescript:JSDOC from schema
-  - [Writing custom modules](./docs/prototypes.md#writing-custom-modules)
-- [About prototypes](./docs/prototypes.md#readme-map)
-  - [Schemas contracts](./docs/prototypes.md#schemas-contracts)
+- ### [About prototypes](./docs/prototypes.md#readme-map)
   - [How to build custom prototype](./docs/prototypes.md#writing-custom-prototypes)
+  - [Contracts](./docs/prototypes.md#schemas-contracts)
 
 ## Copyright & contributors
 
