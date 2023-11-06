@@ -13,11 +13,11 @@ module.exports = (schema, options) => {
   const Error = schema.tools.Error;
 
   function TestWrapper(plan) {
-    if (plan.$type === 'schema') return this.test.bind(this);
+    if (plan.$type === 'schema') return this.test;
     const planRules = plan?.$rules;
     const rules = Array.isArray(planRules) ? planRules : [planRules];
     const tests = rules.filter(test => typeof test === 'string' || typeof test === 'function');
-    typeof this.test === 'function' && tests.unshift(this.test.bind(this));
+    typeof this.test === 'function' && tests.unshift(this.test);
     this.test = (sample, path = 'root', isPartial = false) => {
       if (sample === undefined || sample === null) {
         if (!this.$required) return [];

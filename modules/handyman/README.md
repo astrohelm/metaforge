@@ -2,7 +2,7 @@
 
 Handyman module allow you to:
 
-- pass schema shorthands
+- pass shorthands
 - validate & secure plans
 - pass schemas as namespace parameter
 - pass schemas as plans
@@ -49,3 +49,23 @@ const schema = new Schema({
 - tuple shorthand: <code>['string', 'number']</code>
 - enum shorthand: <code>['winter', 'spring']</code>
 - schema shorthand: <code>new Schema('?string')</code>
+
+### Example:
+
+```js
+const schema = new Schema(
+  {
+    a: 'string', //? scalar shorthand
+    b: '?string', //? optional shorthand
+    c: ['string', 'string'], //? tuple
+    d: new Schema('?string'), //? Schema shorthand
+    e: ['winter', 'spring'], //? Enum shorthand
+    f: { a: 'number', b: 'string' }, //? Object shorthand
+    g: { $type: 'array', items: 'string' }, //? Array items shorthand
+    h: 'MyExternalSchema',
+  },
+  { namespace: { MyExternalSchema: new Schema('string') } },
+);
+```
+
+> String shorthand is analog to <code>{ $type: type, required: type.includes('?') } </code>

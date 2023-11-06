@@ -70,7 +70,11 @@ class ForgePrototype {
     root?: string,
     partial?: boolean,
   ) => Array<SchemaError> & { valid: boolean };
-  toTypescript?: () => string;
+  dts?: (name?: string, options?: { mode?: 'cjs' | 'mjs' }) => string;
+  toTypescript?: (
+    name: string,
+    namespace: { definitions: Set<string>; exports: Set<string> },
+  ) => string;
   [key: string]: unknown;
 }
 

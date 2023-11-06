@@ -2,9 +2,12 @@
 
 ## [Unreleased][unreleased]
 
-<!--
-- Calculated fields module
-- Typescript + JSDOC generation module -->
+<!-- - Calculated fields module -->
+
+## [0.6.0][] - 2023-11-00
+
+- Typescript generation module
+- Documentation fixes
 
 ## [0.5.0][] - 2023-11-05
 
@@ -86,7 +89,8 @@
 - Default exotic types: Any, Undefined, JSON
 - Custom Errors
 
-[unreleased]: https://github.com/astrohelm/metaforge/compare/v0.5.0...HEAD
+[unreleased]: https://github.com/astrohelm/metaforge/compare/v0.6.0...HEAD
+[0.6.0]: https://github.com/astrohelm/metaforge/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/astrohelm/metaforge/compare/v0.4.0...v0.5.0
 [0.4.0]: https://github.com/astrohelm/metaforge/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/astrohelm/metaforge/compare/v0.2.0...v0.3.0

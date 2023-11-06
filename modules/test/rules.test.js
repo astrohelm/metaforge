@@ -1,7 +1,7 @@
 'use strict';
 
 const [test, assert] = [require('node:test'), require('node:assert')];
-const Schema = require('..');
+const Schema = require('../..');
 
 test('Rules', () => {
   const rule1 = sample => sample?.length > 5;
