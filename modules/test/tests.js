@@ -35,8 +35,8 @@ function Enum() {
   };
 }
 
-const EMPTY_ERROR = 'Empty data recieved';
-const TUPLE_ERROR = 'Recieved items length does not match expected length';
+const EMPTY_ERROR = 'Empty data received';
+const TUPLE_ERROR = 'Received items length does not match expected length';
 const INCOR_ERROR = 'Data type misconfiguration, expected: ';
 function Iterable() {
   this.test = (sample, path, isPartial) => {
@@ -54,7 +54,7 @@ function Iterable() {
   };
 }
 
-const EXOTC_ERROR = 'Exotic propertie: ';
+const EXOTC_ERROR = 'Exotic properties: ';
 const RELIC_ERROR = 'Missing properties: ';
 function Struct() {
   const pull = prop => {

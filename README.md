@@ -1,4 +1,4 @@
-<h1 align="center">MetaForge v0.6.0 🕵️</h1>
+<h1 align="center">MetaForge v0.7.0 🕵️</h1>
 
 ## Describe your data structures by subset of JavaScript and:
 
@@ -22,6 +22,7 @@ const userSchema = new Schema({
   $meta: { name: 'user', description: 'schema for users testing' },
   phone: { $type: 'union', types: ['number', 'string'] }, //? number or string
   name: { $type: 'set', items: ['string', '?string'] }, //? set tuple
+  prase: (sample, parent, root) => 'Hello ' + [...parent.name].join(' ') + ' !', // Calculated fields
   mask: { $type: 'array', items: 'string' }, //? array
   ip: {
     $type: 'array',
@@ -30,8 +31,8 @@ const userSchema = new Schema({
     items: { $type: 'union', types: ['string', '?number'], condition: 'oneof', $required: false },
   },
   type: ['elite', 'member', 'guest'], //? enum
-  adress: 'string',
-  secondAdress: '?string',
+  address: 'string',
+  secondAddress: '?string',
   options: { notifications: 'boolean', lvls: ['number', 'string'] },
 });
 
@@ -45,14 +46,15 @@ const sample = [
     mask: ['255', '255', '255', '0'],
     name: new Set(['Alexander', null]),
     options: { notifications: true, lvls: [2, '["admin", "user"]'] },
-    adress: 'Pushkin street',
+    address: 'Pushkin street',
   },
   //...
 ];
 
 systemSchema.warnings; // Inspect warnings after build
-systemSchema.test(sample); // Shema validation
-systemSchema.toTypescript('system'); // Typescript generation
+systemSchema.calculate(sample); // Will assign calculated fields
+systemSchema.test(sample); // Schema validation
+systemSchema.dts('SystemInterface'); // Typescript generation
 systemSchema.pull('userSchema').test(sample[0]); // Subschema validation
 systemSchema.pull('userSchema').test({ phone: 123 }, 'root', true); // Partial validation
 systemSchema.pull('userSchema'); // Metadata: {..., name: 'user', description: 'schema for users testing'}
@@ -69,7 +71,7 @@ systemSchema.pull('userSchema'); // Metadata: {..., name: 'user', description: '
   - [How to build custom prototype](./docs/prototypes.md#writing-custom-prototypes)
   - [Contracts](./docs/prototypes.md#schemas-contracts)
 
-## Copyright & contributors
+<h2 align="center">Copyright & contributors</h2>
 
 <p align="center">
 Copyright © 2023 <a href="https://github.com/astrohelm/metaforge/graphs/contributors">Astrohelm contributors</a>.
