@@ -65,12 +65,45 @@ class ForgePrototype {
   $type: string;
   $required: boolean;
   $plan: Plan;
+  /**
+   * Metatest module required
+   * @description Test any sample for compatibility
+   * @example
+   * const schema = new Schema('string');
+   * schema.test('Hello world').valid // true
+   * schema.test(123) // [SchemaError {}]
+   * schema.test(123).valid // false
+   */
   test?: (
     sample: unknown,
     root?: string,
     partial?: boolean,
   ) => Array<SchemaError> & { valid: boolean };
+  /**
+   * Metatest module required
+   * @description Generates type declaration file for schema
+   * @example
+   * const schema = new Schema('string').dts('MyType');
+   * // type MyType = (unknown | null | undefined);
+   * // export type { MyType };
+   * // export default MyType;
+   */
   dts?: (name?: string, options?: { mode?: 'cjs' | 'mjs' }) => string;
+  /**
+   * Handyman module required
+   * @description Calculated fields
+   * @example
+   * const example = { name: 'Alexander' };
+   * const schema = { name: 'string', phrase: (_, parent) => 'Hello ' + parent.name }
+   * new Schema(schema).calculate(example, true); // { name: 'Alexander', phrase: 'Hello Alexander' }
+   * example; // Not assigned to sample object { name: 'Alexander' };
+   * new Schema(schema).calculate(exampl); // { name: 'Alexander', phrase: 'Hello Alexander' }
+   * example; // Assigned to sample object { name: 'Alexander', phrase: 'Hello Alexander' };
+   */
+  calculate?: (sample: unknown, mode?: boolean) => unknown;
+  /**
+   * @description Do not use directly - Internal mechanism of type generation
+   */
   toTypescript?: (
     name: string,
     namespace: { definitions: Set<string>; exports: Set<string> },
@@ -132,6 +165,7 @@ class Schema extends ForgePrototype {
   tools: Tools;
   constructor(plan: Plan, options?: Options) {}
   /**
+   * Handyman module required
    * @description Pull subschema from namespace or with field $id;
    * @example
    * schema.pull('MyModule'); // Schema {}

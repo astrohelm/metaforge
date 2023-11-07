@@ -22,7 +22,7 @@ const userSchema = new Schema({
   $meta: { name: 'user', description: 'schema for users testing' },
   phone: { $type: 'union', types: ['number', 'string'] }, //? number or string
   name: { $type: 'set', items: ['string', '?string'] }, //? set tuple
-  prase: (sample, parent, root) => 'Hello ' + [...parent.name].join(' ') + ' !', // Calculated fields
+  phrase: (sample, parent, root) => 'Hello ' + [...parent.name].join(' ') + ' !', // Calculated fields
   mask: { $type: 'array', items: 'string' }, //? array
   ip: {
     $type: 'array',
@@ -31,6 +31,7 @@ const userSchema = new Schema({
     items: { $type: 'union', types: ['string', '?number'], condition: 'oneof', $required: false },
   },
   type: ['elite', 'member', 'guest'], //? enum
+  '/[a-Z]+Id/': { $type: '?number', isPattern: true }, // pattern fields
   address: 'string',
   secondAddress: '?string',
   options: { notifications: 'boolean', lvls: ['number', 'string'] },
@@ -40,6 +41,7 @@ const systemSchema = new Schema({ $type: 'array', items: userSchema });
 
 const sample = [
   {
+    myId: 1,
     phone: '7(***)...',
     ip: ['192', 168, '1', null],
     type: 'elite',

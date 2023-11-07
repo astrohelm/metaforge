@@ -11,8 +11,11 @@ module.exports = schema => {
     this.toTypescript = (name, namespace) => compile(nameFix(name), namespace);
   });
 
+  // TODO: Default export removable
+  // TODO: JSDOC documentation
   schema.dts = (name = 'MetaForge', options = {}) => {
     const mode = options.mode ?? 'mjs';
+    // const defaultExport = options.defaultExport ?? true;
     if (name !== nameFix(name)) throw new Error('Invalid name format');
     const namespace = { definitions: new Set(), exports: new Set() };
     const type = schema.toTypescript(name, namespace);

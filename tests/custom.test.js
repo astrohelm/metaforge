@@ -44,3 +44,52 @@ test('Custom modules', () => {
   new Schema().register('second', plugin);
   assert.strictEqual(counter, 2);
 });
+
+test('Example test', () => {
+  const userSchema = new Schema({
+    $id: 'userSchema',
+    $meta: { name: 'user', description: 'schema for users testing' },
+    phone: { $type: 'union', types: ['number', 'string'] }, //? number or string
+    name: { $type: 'set', items: ['string', '?string'] }, //? set tuple
+    phrase: (_, parent) => 'Hello ' + [...parent.name].join(' ') + ' !',
+    mask: { $type: 'array', items: 'string' }, //? array
+    ip: {
+      $type: 'array',
+      $required: false,
+      $rules: [ip => ip[0] === '192'], //? custom rules
+      items: { $type: 'union', types: ['string', '?number'], condition: 'oneof', $required: false },
+    },
+    type: ['elite', 'member', 'guest'], //? enum
+    '[a-z]+Id': { $type: '?number', isPattern: true }, // pattern fields
+    address: 'string',
+    secondAddress: '?string',
+    options: { notifications: 'boolean', lvls: ['number', 'string'] },
+  });
+
+  const systemSchema = new Schema({ $type: 'array', items: userSchema });
+
+  const sample = [
+    {
+      myId: 1,
+      phone: '7(***)...',
+      ip: ['192', 168, '1', null],
+      type: 'elite',
+      mask: ['255', '255', '255', '0'],
+      name: new Set(['Alexander', null]),
+      options: { notifications: true, lvls: [2, '["admin", "user"]'] },
+      address: 'Pushkin street',
+    },
+    //...
+  ];
+
+  assert.strictEqual(systemSchema.warnings.length, 0);
+  systemSchema.calculate(sample);
+  assert.strictEqual(typeof sample[0].phrase, 'string');
+  assert.strictEqual(systemSchema.test(sample).valid, true);
+  assert.strictEqual(!!systemSchema.pull('userSchema'), true);
+  assert.strictEqual(systemSchema.pull('userSchema').test(sample[0]).valid, true);
+  assert.strictEqual(
+    systemSchema.pull('userSchema').test({ phone: 123 }, 'root', true).valid,
+    true,
+  );
+});
