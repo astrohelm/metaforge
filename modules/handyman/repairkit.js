@@ -6,7 +6,7 @@ const SCHEMA_NOT_FOUND = 'Schema not found: ';
 const TYPE_NOT_FOUND = 'Received unknown type: ';
 const ARRAY_TYPE_NOT_FOUND = 'Cant parse type of received array: ';
 module.exports = function RepairKit(schema, namespace) {
-  const shorthands = { string, object, array };
+  const shorthands = { string, object, array, function: func };
   const { tools, forge, child } = schema;
   return repair;
 
@@ -45,7 +45,8 @@ module.exports = function RepairKit(schema, namespace) {
   }
 
   function object(plan, warn) {
-    const { $required = true, $id, ...fields } = plan; //? Schema wrapper #2
+    if (typeof plan.$calc === 'function') return func(plan, warn);
+    const { $required = true, $meta, $id, ...fields } = plan; //? Schema wrapper #2
     if (plan.constructor.name === 'Schema') return { $type: 'schema', schema: plan, $required };
     if (!plan || plan.constructor.name !== 'Object') return unknown;
     if ($id) return { $type: 'schema', $id, schema: child(fields), $required };
@@ -55,7 +56,15 @@ module.exports = function RepairKit(schema, namespace) {
       return unknown;
     }
     const result = { $type: 'object', properties: { ...fields }, $required };
-    if (plan.$meta) result.$meta = plan.$meta;
+    if ($meta) result.$meta = $meta;
     return result;
+  }
+
+  function func(plan, warn) {
+    if (typeof plan === 'function') return { $type: 'unknown', $calc: plan };
+    const { $calc, ...fields } = plan;
+    const type = repair(fields, warn);
+    if (type.$type === 'set' || type.$type === 'map') return type;
+    return { ...repair(fields, warn), $calc };
   }
 };

@@ -20,7 +20,7 @@ module.exports = schema => {
       if (namespace.exports.size === 1) {
         const definitions = Array.from(namespace.definitions).join('');
         if (mode === 'cjs') return definitions + `export = ${type}`;
-        return definitions + `export type ${name}=${type};export default ${type};`;
+        return definitions + `export type ${name}=${type};export default ${name};`;
       }
       namespace.definitions.add(`type ${name}=${type};`);
     }

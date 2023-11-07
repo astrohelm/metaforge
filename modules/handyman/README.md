@@ -7,6 +7,7 @@ Handyman module allow you to:
 - pass schemas as namespace parameter
 - pass schemas as plans
 - pull sub schemas by $id
+- calculate fields
 
 ## With module:
 
@@ -34,7 +35,7 @@ const schema = new Schema({
   properties: {
     test: { $type: 'string' },
     test2: { $type: 'schema', schema: SubSchema },
-    test3: { $type: schema, schema: new Schema({ $type: 'string' }), $required: false };
+    test3: { $type: 'schema', schema: new Schema({ $type: 'string' }), $required: false };
     test4: { $type: 'schema', schema: MyNamespaceSchema }
   },
 });
@@ -62,10 +63,46 @@ const schema = new Schema(
     e: ['winter', 'spring'], //? Enum shorthand
     f: { a: 'number', b: 'string' }, //? Object shorthand
     g: { $type: 'array', items: 'string' }, //? Array items shorthand
-    h: 'MyExternalSchema',
+    h: 'MyExternalSchema', //? Namespace schema shorthand
   },
   { namespace: { MyExternalSchema: new Schema('string') } },
 );
 ```
 
 > String shorthand is analog to <code>{ $type: type, required: type.includes('?') } </code>
+
+## Calculated fields
+
+Calculated fields supposed to do preprocessing of your schema;
+
+> Warning: **experimental**. We do not support some types yet: Map, Set
+
+### Example
+
+```js
+const schema = {
+  $id: 'user',
+  name: 'string',
+  phrase: (sample, schema, root) => 'Hello ' + schema.name + ' !',
+};
+const sample = { name: 'Alexander' };
+new Schema(schema).calc(sample); // { ..., name: 'Alexander', phrase: 'Hello Alexander !'};
+schema; // { $id: 'user', name: 'Alexander', phrase: 'Hello Alexander !'};
+```
+
+### Writing calculated fields
+
+Calculated fields is a function that receives two arguments:
+
+- root: root object <code>{ input: Sample }</code>
+- parent: assigned target object
+
+> Warning: your return value will be assigned to samples
+
+### Additional
+
+Method <code>schema.calc</code> receives mode as second parameter; This method allow to specify
+return value as:
+
+- Schema.calc(sample, true); // Returns copy of sample with assigned values
+- Schema.calc(sample); // Returns sample object with assigned values

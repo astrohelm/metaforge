@@ -1,4 +1,4 @@
-<h1 align="center">MetaForge v0.6.0 🕵️</h1>
+<h1 align="center">MetaForge v0.7.0 🕵️</h1>
 
 ## Describe your data structures by subset of JavaScript and:
 
@@ -22,7 +22,7 @@ const userSchema = new Schema({
   $meta: { name: 'user', description: 'schema for users testing' },
   phone: { $type: 'union', types: ['number', 'string'] }, //? number or string
   name: { $type: 'set', items: ['string', '?string'] }, //? set tuple
-  prase: (parent, root) => 'Hello ' + [...parent.name].join(' ') + ' !', // Calculated fields
+  prase: (sample, parent, root) => 'Hello ' + [...parent.name].join(' ') + ' !', // Calculated fields
   mask: { $type: 'array', items: 'string' }, //? array
   ip: {
     $type: 'array',
@@ -65,14 +65,13 @@ systemSchema.pull('userSchema'); // Metadata: {..., name: 'user', description: '
 - ### [About modules / plugins](./docs/modules.md#modules-or-another-words-plugins)
   - [Writing custom modules](./docs/modules.md#writing-custom-modules)
   - [Metatype](./modules/types/README.md) | generate type annotations from schema
-  - [Metacalc](./modules/calc/README.md) | schema preprocessing module
   - [Handyman](./modules/handyman/README.md) | quality of life module
   - [Metatest](./modules/test/README.md) | adds prototype testing
 - ### [About prototypes](./docs/prototypes.md#readme-map)
   - [How to build custom prototype](./docs/prototypes.md#writing-custom-prototypes)
   - [Contracts](./docs/prototypes.md#schemas-contracts)
 
-## Copyright & contributors
+<h2 align="center">Copyright & contributors</h2>
 
 <p align="center">
 Copyright © 2023 <a href="https://github.com/astrohelm/metaforge/graphs/contributors">Astrohelm contributors</a>.

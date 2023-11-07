@@ -21,7 +21,6 @@ function Schema(plan, options = {}) {
   [this.forge, this.warnings] = [forge, warnings];
   for (const [name, plugin] of modules.entries()) this.register(name, plugin);
   return Object.assign(this, this.tools.build(plan));
-
   function build(plan) {
     const Type = forge.get(plan.$type);
     if (Type) return new Type(plan);
