@@ -22,6 +22,7 @@ const userSchema = new Schema({
   $meta: { name: 'user', description: 'schema for users testing' },
   phone: { $type: 'union', types: ['number', 'string'] }, //? number or string
   name: { $type: 'set', items: ['string', '?string'] }, //? set tuple
+  prase: (parent, root) => 'Hello ' + [...parent.name].join(' ') + ' !', // Calculated fields
   mask: { $type: 'array', items: 'string' }, //? array
   ip: {
     $type: 'array',
@@ -30,8 +31,8 @@ const userSchema = new Schema({
     items: { $type: 'union', types: ['string', '?number'], condition: 'oneof', $required: false },
   },
   type: ['elite', 'member', 'guest'], //? enum
-  adress: 'string',
-  secondAdress: '?string',
+  address: 'string',
+  secondAddress: '?string',
   options: { notifications: 'boolean', lvls: ['number', 'string'] },
 });
 
@@ -45,14 +46,15 @@ const sample = [
     mask: ['255', '255', '255', '0'],
     name: new Set(['Alexander', null]),
     options: { notifications: true, lvls: [2, '["admin", "user"]'] },
-    adress: 'Pushkin street',
+    address: 'Pushkin street',
   },
   //...
 ];
 
 systemSchema.warnings; // Inspect warnings after build
-systemSchema.test(sample); // Shema validation
-systemSchema.toTypescript('system'); // Typescript generation
+systemSchema.calc(sample); // Will assign calculated fields
+systemSchema.test(sample); // Schema validation
+systemSchema.dts('SystemInterface'); // Typescript generation
 systemSchema.pull('userSchema').test(sample[0]); // Subschema validation
 systemSchema.pull('userSchema').test({ phone: 123 }, 'root', true); // Partial validation
 systemSchema.pull('userSchema'); // Metadata: {..., name: 'user', description: 'schema for users testing'}
@@ -63,6 +65,7 @@ systemSchema.pull('userSchema'); // Metadata: {..., name: 'user', description: '
 - ### [About modules / plugins](./docs/modules.md#modules-or-another-words-plugins)
   - [Writing custom modules](./docs/modules.md#writing-custom-modules)
   - [Metatype](./modules/types/README.md) | generate type annotations from schema
+  - [Metacalc](./modules/calc/README.md) | schema preprocessing module
   - [Handyman](./modules/handyman/README.md) | quality of life module
   - [Metatest](./modules/test/README.md) | adds prototype testing
 - ### [About prototypes](./docs/prototypes.md#readme-map)

@@ -5,5 +5,6 @@ module.exports = new Map(
     handyman: require('./handyman'),
     metatype: require('./types'),
     metatest: require('./test'),
+    metacalc: require('./calc'),
   }),
 );

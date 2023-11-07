@@ -3,10 +3,10 @@
 const [test, assert] = [require('node:test'), require('node:assert')];
 const Schema = require('../..');
 
-test('Schema without errors & warnings', () => {
+test('[Metatest] Schema without errors & warnings', () => {
   const userSchema = new Schema({
     $id: 'UserSchema',
-    phone: { $type: 'union', types: ['number', 'string'] }, //? anyof tyupe
+    phone: { $type: 'union', types: ['number', 'string'] }, //? anyof types
     name: { $type: 'set', items: ['string', '?string'] }, //? set tuple
     mask: { $type: 'array', items: 'string' }, //? array
     ip: {
@@ -17,8 +17,8 @@ test('Schema without errors & warnings', () => {
       items: { $type: 'union', types: ['string', '?number'], condition: 'oneof', $required: false },
     },
     type: ['elite', 'member', 'guest'], //? enum
-    adress: 'string',
-    secondAdress: '?string',
+    address: 'string',
+    secondAddress: '?string',
     associations: new Schema({
       $id: 'UserID',
       '[a-z]+Id': { $type: 'number', isPattern: true },
@@ -35,7 +35,7 @@ test('Schema without errors & warnings', () => {
       name: new Set(['Alexander', null]),
       options: { notifications: true, lvls: [2, '["admin", "user"]'] },
       associations: { userId: 1, recordId: 1, dbId: 1 },
-      adress: 'Pushkin street',
+      address: 'Pushkin street',
     },
     {
       phone: 79999999999,
@@ -44,7 +44,7 @@ test('Schema without errors & warnings', () => {
       name: new Set(['Alexander', 'Ivanov']),
       options: { notifications: false, lvls: [2, '["admin", "user"]'] },
       associations: { userId: 2, recordId: 2, dbId: 2 },
-      adress: 'Pushkin street',
+      address: 'Pushkin street',
     },
   ];
 

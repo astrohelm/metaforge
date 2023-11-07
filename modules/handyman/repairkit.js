@@ -3,8 +3,8 @@
 const { string: astropack } = require('astropack');
 const unknown = { $type: 'unknown', $required: false };
 const SCHEMA_NOT_FOUND = 'Schema not found: ';
-const TYPE_NOT_FOUND = 'Recieved unknown type: ';
-const ARRAY_TYPE_NOT_FOUND = 'Cant parse type of recieved array: ';
+const TYPE_NOT_FOUND = 'Received unknown type: ';
+const ARRAY_TYPE_NOT_FOUND = 'Cant parse type of received array: ';
 module.exports = function RepairKit(schema, namespace) {
   const shorthands = { string, object, array };
   const { tools, forge, child } = schema;

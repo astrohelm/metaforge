@@ -2,9 +2,12 @@
 
 ## [Unreleased][unreleased]
 
-<!-- - Calculated fields module -->
+## [0.7.0][] - 2023-11-07
 
-## [0.6.0][] - 2023-11-00
+- Calculated fields
+- Readme & tests for module
+
+## [0.6.0][] - 2023-11-06
 
 - Typescript generation module
 - Documentation fixes

@@ -2,7 +2,7 @@
 
 const RepairKit = require('./repairkit');
 const MISSING_MODULE = 'Missing plugin: handyman';
-const MODULES_ERROR = 'Recieved sub schema with different modules, may be incompatible: ';
+const MODULES_ERROR = 'Received sub schema with different modules, may be incompatible: ';
 const entries = v => (v?.constructor?.name === 'Map' ? v.entries() : Object.entries(v));
 
 module.exports = (schema, options) => {
