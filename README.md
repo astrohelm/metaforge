@@ -52,7 +52,7 @@ const sample = [
 ];
 
 systemSchema.warnings; // Inspect warnings after build
-systemSchema.calc(sample); // Will assign calculated fields
+systemSchema.calculate(sample); // Will assign calculated fields
 systemSchema.test(sample); // Schema validation
 systemSchema.dts('SystemInterface'); // Typescript generation
 systemSchema.pull('userSchema').test(sample[0]); // Subschema validation
