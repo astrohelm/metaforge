@@ -1,6 +1,6 @@
 {
   "license": "MIT",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "type": "commonjs",
   "name": "metaforge",
   "homepage": "https://astrohelm.ru",
@@ -34,7 +34,10 @@
     "node": ">= 18"
   },
   "browser": {},
-  "files": ["/lib", "/types"],
+  "files": [
+    "/lib",
+    "/types"
+  ],
   "scripts": {
     "test": "node --test",
     "dev": "node index.js",

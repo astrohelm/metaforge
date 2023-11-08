@@ -2,23 +2,43 @@
 
 ## [Unreleased][unreleased]
 
+<!--
+## [1.0.0][] - 2023-11-00
+
+- Release version
+-->
+
+<!-- ## [0.9.0][] - 2023-11-10
+
+- Pre-release fixes
+- Documentation enhancements
+- Code quality improvements -->
+
+## [0.8.0][] - 2023-11-08
+
+- JSDOC generation for metatype module, [issue](https://github.com/astrohelm/metaforge/issues/11)
+- Metatest optional default export
+- Typings improvements
+
 ## [0.7.0][] - 2023-11-08
 
-- Calculated fields **[experemental]**
+- Calculated fields **[experemental]**, [issue](https://github.com/astrohelm/metaforge/issues/21)
 - Readme & tests for module
 - Fixed README example errors
 
 ## [0.6.0][] - 2023-11-06
 
-- Typescript generation module
+- Typescript generation module, [issue](https://github.com/astrohelm/metaforge/issues/5)
 - Documentation fixes
 
 ## [0.5.0][] - 2023-11-05
 
-- Readme enhancement
+- Readme enhancement, [issue](https://github.com/astrohelm/metaforge/issues/11)
 - JSDOC documentation
 
 ## [0.4.0][] - 2023-11-05
+
+[Modular mechanism issue](https://github.com/astrohelm/metaforge/issues/17)
 
 - Support latest:21 node version
 - Removed parser (maybe temporary)
@@ -93,7 +113,10 @@
 - Default exotic types: Any, Undefined, JSON
 - Custom Errors
 
-[unreleased]: https://github.com/astrohelm/metaforge/compare/v0.7.0...HEAD
+[unreleased]: https://github.com/astrohelm/metaforge/compare/v0.8.0...HEAD
+[1.0.0]: https://github.com/astrohelm/metaforge/compare/v1.0.0...v1.0.0
+[0.9.0]: https://github.com/astrohelm/metaforge/compare/v0.8.0...v0.9.0
+[0.8.0]: https://github.com/astrohelm/metaforge/compare/v0.7.0...v0.8.0
 [0.7.0]: https://github.com/astrohelm/metaforge/compare/v0.6.0...v0.7.0
 [0.6.0]: https://github.com/astrohelm/metaforge/compare/v0.5.0...v0.6.0
 [0.5.0]: https://github.com/astrohelm/metaforge/compare/v0.4.0...v0.5.0

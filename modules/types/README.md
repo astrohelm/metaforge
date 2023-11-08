@@ -1,25 +1,28 @@
 # Metatype module
 
-Generate type annotation from schema;
-
-> Warning: You will receive compressed version;
+Generate type annotation & jsdoc from schema;
 
 ## Usage
-
-By default module runs in mjs mode, that means that:
-
-- It will export all schemas with $id field & root schema
-- it will export as default root schema
-
-> In cjs mode, it will export only root schema
 
 ```js
 const plan = 'string';
 const schema = new Schema(plan);
-schema.dts('Example', { mode: 'mjs' });
+schema.dts('Example'); // Equal to:
+schema.dts('Example', { export: { type: 'mjs', mode: 'all' } });
 // type Example = string;
 // export type = { Example };
 // export default Example;
+schema.dts('Example', { export: { type: 'mjs', mode: 'no' } });
+// type Example = string;
+schema.dts('Example', { export: { type: 'mjs', mode: 'exports-only' } });
+// type Example = string;
+// export type = { Example };
+schema.dts('Example', { export: { type: 'mjs', mode: 'default-only' } });
+// type Example = string;
+// export default Example;
+schema.dts('Example', { export: { type: 'cjs' } });
+// type Example = string;
+// export = Example;
 ```
 
 ## Example
@@ -28,24 +31,39 @@ schema.dts('Example', { mode: 'mjs' });
 
 ```js
 {
+  $meta: { '@name': 'User', '@description': 'User data' }
   "firstName": 'string',
-  "lastName": 'string',
+  "lastName": { $type: '?string', $meta: { '@description': 'optional' } },
   "label": ["member", "guest", "vip"]
   "age": '?number',
-  settings: { alertLevel: 'string', $id: 'Setting' }
+  settings: {
+    $id: 'Setting',
+    alertLevel: 'string',
+    $meta: { '@description': 'User settings' }
+  }
 }
 ```
 
-### Output (mjs mode):
+### Output:
 
 ```ts
+/**
+ * @description User settings
+ */
 interface Settings {
   alertLevel: string;
 }
 
+/**
+ * @name User
+ * @description User data
+ */
 interface Example {
   firstName: string;
-  lastName: string;
+  /**
+   * @description optional
+   */
+  lastName?: string;
   label: 'member' | 'guest' | 'vip';
   age?: number;
   settings: Settings;
@@ -55,28 +73,12 @@ export type { Example };
 export default Example;
 ```
 
-### Output (cjs mode):
-
-```ts
-interface Settings {
-  alertLevel: string;
-}
-
-interface Example {
-  firstName: string;
-  lastName: string;
-  label: 'member' | 'guest' | 'vip';
-  settings: Settings;
-  age?: number;
-}
-
-export = Example;
-```
-
 ## Writing custom prototypes with Metatype
 
 By default all custom types will recieve unknown type; If you want to have custom type, you may
 create custom prototype with toTypescript field;
+
+> If your prototype has children prototypes, it not be handled with jsdoc comments;
 
 ```js
 function Date(plan, tools) {
@@ -89,6 +91,27 @@ function Date(plan, tools) {
     //? You can return only name or value that can be assigned to type
     return name; // Equal to:
     return 'Date';
+    //? Returned value will be assigned to other type or will be exported if it was on top
   };
 }
+```
+
+## JSDOC
+
+To have JSDOC comments in your type annotations you need to add <code>\$meta</code> field to your
+schema; Also, your <code>\$meta</code> properties should start with <code>@</code>;
+
+### Example
+
+```js
+({
+  reciever: 'number',
+  money: 'number',
+  $meta: {
+    '@version': 'v1',
+    '@name': 'Pay check',
+    '@description': 'Cash settlement',
+    '@example': '<caption>Check example</caption>\n{ money: 100, reciever: 2 }',
+  },
+});
 ```

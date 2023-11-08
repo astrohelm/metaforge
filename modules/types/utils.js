@@ -15,4 +15,13 @@ const brackets = (sample, allowSkip) => {
   return sep + sample + sep;
 };
 
-module.exports = { nameFix, brackets, MAX_ITEMS };
+const jsdoc = (meta, spacing = '') => {
+  let result = spacing + '/**\n';
+  for (const key in meta) {
+    if (key[0] !== '@') continue;
+    result += spacing + ` * ${key} ${meta[key]}\n`;
+  }
+  return result + spacing + ' */\n';
+};
+
+module.exports = { nameFix, brackets, MAX_ITEMS, jsdoc };
