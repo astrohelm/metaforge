@@ -9,9 +9,8 @@ const copy = sample => (Array.isArray(sample) ? [...sample] : { ...sample });
 
 module.exports = (schema, options) => {
   const namespace = options.namespace ? new Map(entries(options.namespace)) : new Map();
+  const [repair, unnamedSchemas] = [new RepairKit(schema, namespace), new Set()];
   const [{ tools, modules }, { build, warn }] = [schema, schema.tools];
-  const repair = new RepairKit(schema, namespace);
-  const unnamedSchemas = new Set();
   schema.pull = name => {
     const schema = namespace.get(name);
     if (schema) return schema;
@@ -23,29 +22,22 @@ module.exports = (schema, options) => {
     return null;
   };
 
-  //TODO(sashapop10): Set problem
   schema.calculate = (sample, mode) => {
-    let root = mode && typeof sample === 'object' ? copy(sample) : sample;
     const calc = schema.$calc;
-    if (typeof calc === 'function') root = calc(root, root);
-    else if (calc) root = calc;
+    let root = mode && typeof sample === 'object' ? copy(sample) : sample;
+    if (calc) root = typeof calc === 'function' ? calc(root, root) : calc;
     if (typeof root !== 'object') return root;
     return traverse(root, schema);
     function traverse(parent, schema) {
       const data = mode ? copy(parent) : parent;
       for (const key of TRAVERSE_PATH) {
-        if (schema.$type === 'set') continue;
         const children = schema[key];
         if (!children) continue;
-        const iterator = key === '$properties' ? [...children.keys()] : Object.keys(data);
-        for (const prop of iterator) {
+        for (const prop of key === '$properties' ? [...children.keys()] : Object.keys(data)) {
           const schema = children.get?.(prop) ?? children[prop] ?? children[0];
-          if (!schema) console.log(schema, prop, iterator);
           const calc = schema.$calc;
-          let sample = data[prop];
-          if (typeof calc === 'function') sample = data[prop] = calc(sample, parent, root);
-          else if (calc) sample = data[prop] = calc;
-          if (typeof sample === 'object') data[prop] = traverse(sample, schema);
+          if (calc) data[prop] = typeof calc === 'function' ? calc(data[prop], parent, root) : calc;
+          if (typeof data[prop] === 'object') data[prop] = traverse(data[prop], schema);
         }
       }
       return data;

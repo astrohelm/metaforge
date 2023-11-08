@@ -19,21 +19,23 @@ npm i metaforge --save
 ```js
 const userSchema = new Schema({
   $id: 'userSchema',
-  $meta: { name: 'user', description: 'schema for users testing' },
+  $meta: { '@name': 'User', '@description': 'Schema for user testing' }, //? JSDOC
   phone: { $type: 'union', types: ['number', 'string'] }, //? number or string
   name: { $type: 'set', items: ['string', '?string'] }, //? set tuple
   phrase: (sample, parent, root) => 'Hello ' + [...parent.name].join(' ') + ' !', // Calculated fields
-  mask: { $type: 'array', items: 'string' }, //? array
+  mask: { $type: 'array', items: 'string' }, //? array of strings
   ip: {
+    $meta: { '@description': 'User ip adress' },
     $type: 'array',
     $required: false,
     $rules: [ip => ip[0] === '192'], //? custom rules
+    // Array<string | null | undefined | number>
     items: { $type: 'union', types: ['string', '?number'], condition: 'oneof', $required: false },
   },
   type: ['elite', 'member', 'guest'], //? enum
   '/[a-Z]+Id/': { $type: '?number', isPattern: true }, // pattern fields
   address: 'string',
-  secondAddress: '?string',
+  secondAddress: '?string', // optional fields
   options: { notifications: 'boolean', lvls: ['number', 'string'] },
 });
 

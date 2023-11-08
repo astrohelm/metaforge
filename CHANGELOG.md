@@ -8,11 +8,11 @@
 - Release version
 -->
 
-<!-- ## [0.9.0][] - 2023-11-10
+## [0.9.0][] - 2023-11-00
 
 - Pre-release fixes
 - Documentation enhancements
-- Code quality improvements -->
+- Code quality improvements
 
 ## [0.8.0][] - 2023-11-08
 

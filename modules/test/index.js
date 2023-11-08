@@ -11,7 +11,6 @@ module.exports = (schema, options) => {
   for (const [name, proto] of prototypes.entries()) schema.forge.attach(name, proto);
   const schemaRules = options.rules ? new Map(objectEntries('any', options.rules)) : new Map();
   const Error = schema.tools.Error;
-
   function TestWrapper(plan) {
     if (plan.$type === 'schema') return this.test;
     const planRules = plan?.$rules;
