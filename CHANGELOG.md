@@ -6,15 +6,15 @@
 ## [1.0.0][] - 2023-11-00
 
 - Release version
+-->
 
-## [0.9.0][] - 2023-11-00
+<!-- ## [0.9.0][] - 2023-11-10
 
 - Pre-release fixes
 - Documentation enhancements
-- Code quality improvements
- -->
+- Code quality improvements -->
 
-## [0.8.0][] - 2023-11-09
+## [0.8.0][] - 2023-11-08
 
 - JSDOC generation for metatype module, [issue](https://github.com/astrohelm/metaforge/issues/11)
 - Metatest optional default export

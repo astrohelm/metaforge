@@ -84,11 +84,16 @@ class ForgePrototype {
    * @description Generates type declaration file for schema
    * @example
    * const schema = new Schema('string').dts('MyType');
-   * // type MyType = (unknown | null | undefined);
+   * // type MyType = (unknown | undefined);
    * // export type { MyType };
    * // export default MyType;
    */
-  dts?: (name?: string, options?: { mode?: 'cjs' | 'mjs' }) => string;
+  dts?: (
+    name?: string,
+    options?: {
+      export: { mode?: 'cjs' | 'mjs'; type: 'all' | 'no' | 'exports-only' | 'default-only' };
+    },
+  ) => string;
   /**
    * Handyman module required
    * @description Calculated fields

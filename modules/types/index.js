@@ -1,6 +1,6 @@
 'use strict';
 
-const { nameFix } = require('./utils');
+const { nameFix, jsdoc } = require('./utils');
 const types = require('./types');
 
 module.exports = schema => {
@@ -11,26 +11,25 @@ module.exports = schema => {
     this.toTypescript = (name, namespace) => compile(nameFix(name), namespace);
   });
 
-  // TODO: Default export removable
-  // TODO: JSDOC documentation
   schema.dts = (name = 'MetaForge', options = {}) => {
-    const mode = options.mode ?? 'mjs';
-    // const defaultExport = options.defaultExport ?? true;
+    const [exportMode, exportType] = [options.export?.mode ?? 'all', options.export?.type ?? 'mjs'];
     if (name !== nameFix(name)) throw new Error('Invalid name format');
     const namespace = { definitions: new Set(), exports: new Set() };
     const type = schema.toTypescript(name, namespace);
-    if (type !== name) {
-      if (namespace.exports.size === 1) {
-        const definitions = Array.from(namespace.definitions).join('');
-        if (mode === 'cjs') return definitions + `export = ${type}`;
-        return definitions + `export type ${name}=${type};export default ${name};`;
-      }
-      namespace.definitions.add(`type ${name}=${type};`);
-    }
     namespace.exports.add(name);
-    const definitions = Array.from(namespace.definitions).join('');
-    if (mode === 'cjs') return definitions + `export = ${name};`;
-    const exports = `export type{${Array.from(namespace.exports).join(',')}};`;
-    return definitions + exports + `export default ${name};`;
+    if (type !== name) {
+      const meta = schema.$meta;
+      namespace.definitions.add(`${meta ? jsdoc(meta) : ''}type ${name} = ${type};`);
+    }
+    let result = Array.from(namespace.definitions).join('\n\n');
+    if (exportMode === 'no') return result;
+    if (exportMode !== 'default-only' && exportType === 'mjs') {
+      result += `\nexport type { ${Array.from(namespace.exports).join(', ')} };`;
+    }
+    if (exportMode !== 'exports-only') {
+      if (exportType === 'mjs') return result + `\nexport default ${name};`;
+      return result + `\nexport = ${name};`;
+    }
+    return result;
   };
 };

@@ -46,7 +46,7 @@ module.exports = function RepairKit(schema, namespace) {
 
   function object(plan, warn) {
     if (typeof plan.$calc === 'function') return func(plan, warn);
-    const { $required = true, $meta, $id, ...fields } = plan; //? Schema wrapper #2
+    const { $required = true, $id, ...fields } = plan; //? Schema wrapper #2
     if (plan.constructor.name === 'Schema') return { $type: 'schema', schema: plan, $required };
     if (!plan || plan.constructor.name !== 'Object') return unknown;
     if ($id) return { $type: 'schema', $id, schema: child(fields), $required };
@@ -55,7 +55,8 @@ module.exports = function RepairKit(schema, namespace) {
       warn({ cause: TYPE_NOT_FOUND + plan.$type, sample: plan.$type, plan });
       return unknown;
     }
-    const result = { $type: 'object', properties: { ...fields }, $required };
+    const { $meta, ...other } = fields;
+    const result = { $type: 'object', properties: { ...other }, $required };
     if ($meta) result.$meta = $meta;
     return result;
   }

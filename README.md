@@ -1,4 +1,4 @@
-<h1 align="center">MetaForge v0.7.0 🕵️</h1>
+<h1 align="center">MetaForge v0.8.0 🕵️</h1>
 
 ## Describe your data structures by subset of JavaScript and:
 

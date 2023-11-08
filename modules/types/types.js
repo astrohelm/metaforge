@@ -20,9 +20,9 @@ module.exports = new Map(
   }),
 );
 
-const { brackets, MAX_ITEMS } = require('./utils');
+const { brackets, MAX_ITEMS, jsdoc } = require('./utils');
 function Scalar() {
-  this.toTypescript = () => (this.$required ? this.$type : `(${this.$type}|null|undefined)`);
+  this.toTypescript = () => (this.$required ? this.$type : `(${this.$type}|undefined)`);
 }
 
 function Enumerable() {
@@ -30,7 +30,7 @@ function Enumerable() {
     const or = i => (this.$enum.length - 1 === i ? '' : '|');
     const type = this.$enum.reduce((acc, s, i) => acc + brackets(s, false) + or(i), '');
     if (this.$enum.length < MAX_ITEMS) return '(' + type + ')';
-    namespace.definitions.add(`type ${name}=${type};`);
+    namespace.definitions.add(`type ${name} = ${type};`);
     return name;
   };
 }
@@ -43,19 +43,23 @@ function Iterable() {
     else if (this.$isTuple) type = `[${builded.join(',')}]`;
     else type = `(${builded.join('|')})[]`;
     if (builded.length < MAX_ITEMS) return type;
-    namespace.definitions.add(`type ${name}=${type};`);
+    namespace.definitions.add(`type ${name} = ${type};`);
     return name;
   };
 }
 
+const SPACING = '  ';
 function Struct() {
   this.toTypescript = (name, namespace) => {
-    let result = `interface ${name}{`;
+    const rootMeta = this.$meta;
+    let result = `interface ${name} {\n`;
+    if (rootMeta) result = jsdoc(rootMeta) + result;
     for (const [key, proto] of this.$properties.entries()) {
       const type = proto.toTypescript(`${name}_${key}`, namespace);
-      result += `${brackets(key, true) + (proto.$required ? '' : '?')}:${type};`;
+      if (proto.$meta) result += jsdoc(proto.$meta, SPACING);
+      result += `${SPACING + brackets(key, true) + (proto.$required ? '' : '?')}: ${type};\n`;
     }
-    namespace.definitions.add(result + '};');
+    namespace.definitions.add(result + '};' + (rootMeta ? '\n' : ''));
     return name;
   };
 }
@@ -65,7 +69,7 @@ function Union() {
     const types = this.$types.map((type, i) => type.toTypescript(`${name}_${i}`, namespace));
     const type = types.join(this.$condition === 'allof' ? '&' : '|');
     if (types.length < MAX_ITEMS) return '(' + type + ')';
-    namespace.definitions.add(`type ${name}=${type};`);
+    namespace.definitions.add(`type ${name} = ${type};`);
     return name;
   };
 }
@@ -76,7 +80,7 @@ function Schema() {
     const id = this.$id ?? name;
     const type = compile(id, namespace);
     if (!this.$id) return type;
-    if (type !== id) namespace.definitions.add(`type ${id}=${type};`);
+    if (type !== id) namespace.definitions.add(`type ${id} = ${type};`);
     namespace.exports.add(id);
     return id;
   };

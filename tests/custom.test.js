@@ -48,12 +48,13 @@ test('Custom modules', () => {
 test('Example test', () => {
   const userSchema = new Schema({
     $id: 'userSchema',
-    $meta: { name: 'user', description: 'schema for users testing' },
+    $meta: { '@name': 'user', '@description': 'schema for users testing' },
     phone: { $type: 'union', types: ['number', 'string'] }, //? number or string
     name: { $type: 'set', items: ['string', '?string'] }, //? set tuple
     phrase: (_, parent) => 'Hello ' + [...parent.name].join(' ') + ' !',
     mask: { $type: 'array', items: 'string' }, //? array
     ip: {
+      $meta: { '@description': 'User ip adress' },
       $type: 'array',
       $required: false,
       $rules: [ip => ip[0] === '192'], //? custom rules
@@ -66,7 +67,11 @@ test('Example test', () => {
     options: { notifications: 'boolean', lvls: ['number', 'string'] },
   });
 
-  const systemSchema = new Schema({ $type: 'array', items: userSchema });
+  const systemSchema = new Schema({
+    $meta: { '@name': 'Users', '@description': 'Array of users' },
+    $type: 'array',
+    items: userSchema,
+  });
 
   const sample = [
     {
