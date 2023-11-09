@@ -1,5 +1,7 @@
 'use strict';
 
+const { unionHandler, instanceOfArray, objectEntries } = require('./utils');
+
 module.exports = new Map(
   Object.entries({
     union: Union,
@@ -14,15 +16,21 @@ module.exports = new Map(
     record: Struct,
     map: Struct,
     enum: Enum,
+    null: Null,
   }),
 );
-
-const { unionHandler, instanceOfArray, objectEntries } = require('./utils');
 
 const WRONG_TYPE = 'Type misconfiguration, expected type: ';
 function Scalar() {
   this.test = sample => {
     if (typeof sample === this.$type) return null;
+    return WRONG_TYPE + this.$type;
+  };
+}
+
+function Null() {
+  this.test = sample => {
+    if (sample === null) return null;
     return WRONG_TYPE + this.$type;
   };
 }

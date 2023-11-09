@@ -1,4 +1,4 @@
-<h1 align="center">MetaForge v0.8.0 🕵️</h1>
+<h1 align="center">MetaForge v0.9.0 🕵️</h1>
 
 ## Describe your data structures by subset of JavaScript and:
 
@@ -19,21 +19,27 @@ npm i metaforge --save
 ```js
 const userSchema = new Schema({
   $id: 'userSchema',
-  $meta: { name: 'user', description: 'schema for users testing' },
+  $meta: { '@name': 'User', '@description': 'Schema for user testing' }, //? JSDOC
   phone: { $type: 'union', types: ['number', 'string'] }, //? number or string
   name: { $type: 'set', items: ['string', '?string'] }, //? set tuple
   phrase: (sample, parent, root) => 'Hello ' + [...parent.name].join(' ') + ' !', // Calculated fields
-  mask: { $type: 'array', items: 'string' }, //? array
+  mask: { $type: 'array', items: 'string' }, //? array of strings
   ip: {
+    $meta: { '@description': 'User ip adress' },
     $type: 'array',
     $required: false,
     $rules: [ip => ip[0] === '192'], //? custom rules
-    items: { $type: 'union', types: ['string', '?number'], condition: 'oneof', $required: false },
+    items: {
+      $type: 'union',
+      types: ['string', 'number', 'null'], // Array<string | null | number>
+      condition: 'oneof',
+      $required: true,
+    },
   },
   type: ['elite', 'member', 'guest'], //? enum
   '/[a-Z]+Id/': { $type: '?number', isPattern: true }, // pattern fields
   address: 'string',
-  secondAddress: '?string',
+  secondAddress: '?string', // optional fields
   options: { notifications: 'boolean', lvls: ['number', 'string'] },
 });
 
@@ -46,7 +52,7 @@ const sample = [
     ip: ['192', 168, '1', null],
     type: 'elite',
     mask: ['255', '255', '255', '0'],
-    name: new Set(['Alexander', null]),
+    name: new Set(['Alexander', undefined]),
     options: { notifications: true, lvls: [2, '["admin", "user"]'] },
     address: 'Pushkin street',
   },

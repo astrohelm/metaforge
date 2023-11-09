@@ -9,7 +9,6 @@ module.exports = function RepairKit(schema, namespace) {
   const shorthands = { string, object, array, function: func };
   const { tools, forge, child } = schema;
   return repair;
-
   function repair(plan, warn = tools.warn) {
     const type = Array.isArray(plan) ? 'array' : typeof plan;
     return shorthands[type]?.(plan, warn) ?? unknown;
@@ -45,6 +44,7 @@ module.exports = function RepairKit(schema, namespace) {
   }
 
   function object(plan, warn) {
+    if (plan === null) return { $type: 'null', $required: true };
     if (typeof plan.$calc === 'function') return func(plan, warn);
     const { $required = true, $id, ...fields } = plan; //? Schema wrapper #2
     if (plan.constructor.name === 'Schema') return { $type: 'schema', schema: plan, $required };
@@ -65,7 +65,6 @@ module.exports = function RepairKit(schema, namespace) {
     if (typeof plan === 'function') return { $type: 'unknown', $calc: plan };
     const { $calc, ...fields } = plan;
     const type = repair(fields, warn);
-    if (type.$type === 'set' || type.$type === 'map') return type;
-    return { ...repair(fields, warn), $calc };
+    return type.$type === 'set' || type.$type === 'map' ? type : { ...type, $calc };
   }
 };

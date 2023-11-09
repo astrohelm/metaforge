@@ -58,7 +58,12 @@ test('Example test', () => {
       $type: 'array',
       $required: false,
       $rules: [ip => ip[0] === '192'], //? custom rules
-      items: { $type: 'union', types: ['string', '?number'], condition: 'oneof', $required: false },
+      items: {
+        $type: 'union',
+        types: ['string', '?number', 'null'],
+        condition: 'oneof',
+        $required: false,
+      },
     },
     type: ['elite', 'member', 'guest'], //? enum
     '[a-z]+Id': { $type: '?number', isPattern: true }, // pattern fields
@@ -80,7 +85,7 @@ test('Example test', () => {
       ip: ['192', 168, '1', null],
       type: 'elite',
       mask: ['255', '255', '255', '0'],
-      name: new Set(['Alexander', null]),
+      name: new Set(['Alexander', undefined]),
       options: { notifications: true, lvls: [2, '["admin", "user"]'] },
       address: 'Pushkin street',
     },
