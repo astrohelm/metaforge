@@ -1,7 +1,10 @@
 'use strict';
 
+const { brackets, jsdoc } = require('./utils');
+
 module.exports = new Map(
   Object.entries({
+    null: Scalar,
     unknown: Scalar,
     boolean: Scalar,
     string: Scalar,
@@ -20,18 +23,15 @@ module.exports = new Map(
   }),
 );
 
-const { brackets, MAX_ITEMS, jsdoc } = require('./utils');
 function Scalar() {
   this.toTypescript = () => (this.$required ? this.$type : `(${this.$type}|undefined)`);
 }
 
 function Enumerable() {
-  this.toTypescript = (name, namespace) => {
+  this.toTypescript = () => {
     const or = i => (this.$enum.length - 1 === i ? '' : '|');
     const type = this.$enum.reduce((acc, s, i) => acc + brackets(s, false) + or(i), '');
-    if (this.$enum.length < MAX_ITEMS) return '(' + type + ')';
-    namespace.definitions.add(`type ${name} = ${type};`);
-    return name;
+    return '(' + type + ')';
   };
 }
 
@@ -42,9 +42,7 @@ function Iterable() {
     if (this.$type === 'set') type = `Set<${builded.join('|')}>`;
     else if (this.$isTuple) type = `[${builded.join(',')}]`;
     else type = `(${builded.join('|')})[]`;
-    if (builded.length < MAX_ITEMS) return type;
-    namespace.definitions.add(`type ${name} = ${type};`);
-    return name;
+    return type;
   };
 }
 
@@ -68,9 +66,7 @@ function Union() {
   this.toTypescript = (name, namespace) => {
     const types = this.$types.map((type, i) => type.toTypescript(`${name}_${i}`, namespace));
     const type = types.join(this.$condition === 'allof' ? '&' : '|');
-    if (types.length < MAX_ITEMS) return '(' + type + ')';
-    namespace.definitions.add(`type ${name} = ${type};`);
-    return name;
+    return '(' + type + ')';
   };
 }
 

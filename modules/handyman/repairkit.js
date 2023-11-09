@@ -44,6 +44,7 @@ module.exports = function RepairKit(schema, namespace) {
   }
 
   function object(plan, warn) {
+    if (plan === null) return { $type: 'null', $required: true };
     if (typeof plan.$calc === 'function') return func(plan, warn);
     const { $required = true, $id, ...fields } = plan; //? Schema wrapper #2
     if (plan.constructor.name === 'Schema') return { $type: 'schema', schema: plan, $required };

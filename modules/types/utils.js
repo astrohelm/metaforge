@@ -2,7 +2,6 @@
 
 const { string: astropack } = require('astropack');
 
-const MAX_ITEMS = 5;
 const SPECIAL = /[ `!@#%^&*()+\-=[\]{};':"\\|,.<>/?~]/;
 const nameFix = name => name.replace(SPECIAL, '');
 const brackets = (sample, allowSkip) => {
@@ -21,4 +20,4 @@ const jsdoc = (meta, spacing = '') => {
   return result + spacing + ' */\n';
 };
 
-module.exports = { nameFix, brackets, MAX_ITEMS, jsdoc };
+module.exports = { nameFix, brackets, jsdoc };

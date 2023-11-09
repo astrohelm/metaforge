@@ -4,6 +4,8 @@ You can extend schema functionality using modules;
 
 ## Default Modules
 
+Default modules are enabled by default, here they are:
+
 - [Handyman](../modules/handyman/README.md) | quality of life module
 - [Metatest](../modules/test/README.md) | adds prototype testing
 - [Metatype]('../modules/types/README.md') | generate typescript:JSDOC from schema

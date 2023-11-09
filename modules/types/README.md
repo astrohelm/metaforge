@@ -1,6 +1,6 @@
 # Metatype module
 
-Generate type annotation & jsdoc from schema;
+Generate type annotations & jsdoc from schema;
 
 ## Usage
 

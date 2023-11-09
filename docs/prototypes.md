@@ -13,7 +13,8 @@ Default prototypes separated by kinds:
 - [struct](#structs), [struct](#iterable-structs) - value also contains other prototypes
 - [union](#union) - prototypes union
 - [enum](#enum) - enumerable value
-- And [unknown](#unknown)
+- [null](#null) - null value
+- And [unknown / any](#unknown)
 
 ### Scalar:
 
@@ -187,7 +188,7 @@ Metatest will check only for requirement & rules (if passed);
 #### Schema
 
 ```ts
-type Unknown = { $type: 'any' | 'unknown'; $required: true };
+type Unknown = { $type: 'any' | 'unknown'; $required: boolean };
 ```
 
 #### Example
@@ -199,9 +200,27 @@ type Unknown = { $type: 'any' | 'unknown'; $required: true };
 { $type: 'any', $required: true }
 ```
 
+### Null:
+
+#### Schema
+
+```ts
+type Unknown = { $type: 'null'; $required: boolean };
+```
+
+#### Example
+
+```js
+// With handyman
+'null'
+null
+// Without
+{ $type: 'null', $required: true }
+```
+
 ## Writing custom prototypes
 
-Custom properties can be written as:
+Custom prototypes can be written as:
 
 - class
 - object
@@ -221,6 +240,13 @@ const MyPrototype = (plan, tools) => ({
 });
 
 const MyPrototype = { someData: 'data' };
+
+const MyPrototype = {
+  someData: 'data',
+  construct(plan, tools) {
+    return this; // Always return this;
+  }
+};
 
 class MyPrototype {
   someData = 'data';
@@ -251,7 +277,7 @@ class MyPrototype {
 ### Injecting custom prototypes
 
 - Prototypes can be passed to schema options as Map, entries or object.
-- **Only in modules** Or you can inject your prototype with <code>schema.forge.attach</code>.
+- Or you can inject your prototype with <code>schema.forge.attach</code>.
 - Your prototype **must starts** with lower case
 - If prototype already exists your prototype will be pushed at the end of prototype chain (higher
   priority properties)

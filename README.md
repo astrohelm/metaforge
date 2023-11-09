@@ -1,4 +1,4 @@
-<h1 align="center">MetaForge v0.8.0 🕵️</h1>
+<h1 align="center">MetaForge v0.9.0 🕵️</h1>
 
 ## Describe your data structures by subset of JavaScript and:
 
@@ -29,8 +29,12 @@ const userSchema = new Schema({
     $type: 'array',
     $required: false,
     $rules: [ip => ip[0] === '192'], //? custom rules
-    // Array<string | null | undefined | number>
-    items: { $type: 'union', types: ['string', '?number'], condition: 'oneof', $required: false },
+    items: {
+      $type: 'union',
+      types: ['string', 'number', 'null'], // Array<string | null | number>
+      condition: 'oneof',
+      $required: true,
+    },
   },
   type: ['elite', 'member', 'guest'], //? enum
   '/[a-Z]+Id/': { $type: '?number', isPattern: true }, // pattern fields
@@ -48,7 +52,7 @@ const sample = [
     ip: ['192', 168, '1', null],
     type: 'elite',
     mask: ['255', '255', '255', '0'],
-    name: new Set(['Alexander', null]),
+    name: new Set(['Alexander', undefined]),
     options: { notifications: true, lvls: [2, '["admin", "user"]'] },
     address: 'Pushkin street',
   },

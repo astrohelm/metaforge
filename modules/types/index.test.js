@@ -19,7 +19,7 @@ test('[DTS] Basic', () => {
 test('[DTS] Enumerable', () => {
   assert.strictEqual(generate(['hello', 'world']), base + "('hello'|'world');" + exp);
   const data = ['hello', 'there', 'my', 'dear', 'world'];
-  const result = `type MetaForge = 'hello'|'there'|'my'|'dear'|'world';`;
+  const result = `type MetaForge = ('hello'|'there'|'my'|'dear'|'world');`;
   assert.strictEqual(generate(data), result + exp);
 });
 
@@ -53,10 +53,9 @@ test('[DTS] Array', () => {
   );
   const enumerable = ['hello', 'there', 'my', 'dear', 'world'];
   const complex = ['?number', enumerable, { a: 'string', b: enumerable }];
-  let result = "type MetaForge_1 = 'hello'|'there'|'my'|'dear'|'world';\n\n";
-  result += "type MetaForge_2_b = 'hello'|'there'|'my'|'dear'|'world';\n\n";
-  result += 'interface MetaForge_2 {\n  a: string;\n  b: MetaForge_2_b;\n};\n\n';
-  result += 'type MetaForge = [(number|undefined),MetaForge_1,MetaForge_2];' + exp;
+  const strEnum = `('hello'|'there'|'my'|'dear'|'world')`;
+  let result = `interface MetaForge_2 {\n  a: string;\n  b: ${strEnum};\n};\n\n`;
+  result += `type MetaForge = [(number|undefined),${strEnum},MetaForge_2];` + exp;
   assert.strictEqual(generate(complex), result);
 });
 

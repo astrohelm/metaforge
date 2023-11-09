@@ -35,11 +35,10 @@ const schema = new Schema({
   properties: {
     test: { $type: 'string' },
     test2: { $type: 'schema', schema: SubSchema },
-    test3: { $type: 'schema', schema: new Schema({ $type: 'string' }), $required: false };
-    test4: { $type: 'schema', schema: MyNamespaceSchema }
+    test3: { $type: 'schema', schema: new Schema({ $type: 'string' }), $required: false },
+    test4: { $type: 'schema', schema: MyNamespaceSchema },
   },
 });
-
 ```
 
 ## Possible shorthands:
@@ -77,7 +76,17 @@ Calculated fields supposed to do preprocessing of your schema;
 
 > Warning: **experimental**. We do not support some types yet: Map, Set
 
-### Example
+### Writing calculated fields
+
+Calculated fields is a function or schema with field $calc;
+
+Calculated fields can be constant or a function that receives next arguments:
+
+- sample: current sample
+- parent: assigned target object
+- root: root object <code>{ input: Sample }</code>
+
+#### Example
 
 ```js
 const schema = {
@@ -90,19 +99,25 @@ new Schema(schema).calc(sample); // { ..., name: 'Alexander', phrase: 'Hello Ale
 schema; // { $id: 'user', name: 'Alexander', phrase: 'Hello Alexander !'};
 ```
 
-### Writing calculated fields
+```js
+const schema = new Schema({
+  a: { $type: 'number', $calc: (sample, parent, root) => parent.b + 2 },
+  b: 'number',
+  c: { $type: 'number', $calc: 0 },
+});
 
-Calculated fields is a function that receives two arguments:
-
-- root: root object <code>{ input: Sample }</code>
-- parent: assigned target object
+const sample = { b: 2 };
+schema.test(sample).valid; // false
+schema.calculate(sample); // { a: 4, b: 2, c: 0 }
+schema.test(sample).valid; // true
+```
 
 > Warning: your return value will be assigned to samples
 
 ### Additional
 
-Method <code>schema.calc</code> receives mode as second parameter; This method allow to specify
+Method <code>schema.calculate</code> receives mode as second parameter; This method allow to specify
 return value as:
 
-- Schema.calc(sample, true); // Returns copy of sample with assigned values
-- Schema.calc(sample); // Returns sample object with assigned values
+- schema.calculate(sample, true); // Returns copy of sample with assigned values
+- schema.calculate(sample); // Returns sample object with assigned values

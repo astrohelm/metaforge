@@ -13,6 +13,9 @@
 - Pre-release fixes
 - Documentation enhancements
 - Code quality improvements
+- New type - null
+- Not required fields now works only with undefined samples
+- Removed max items mechanism from type annotations module generator
 
 ## [0.8.0][] - 2023-11-08
 
