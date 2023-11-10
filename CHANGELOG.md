@@ -2,13 +2,12 @@
 
 ## [Unreleased][unreleased]
 
-<!--
-## [1.0.0][] - 2023-11-00
+## [1.0.0][] - 2023-11-10
 
+- ES modules support & typescript support
 - Release version
--->
 
-## [0.9.0][] - 2023-11-00
+## [0.9.0][] - 2023-11-09
 
 - Pre-release fixes
 - Documentation enhancements
@@ -116,8 +115,8 @@
 - Default exotic types: Any, Undefined, JSON
 - Custom Errors
 
-[unreleased]: https://github.com/astrohelm/metaforge/compare/v0.8.0...HEAD
-[1.0.0]: https://github.com/astrohelm/metaforge/compare/v1.0.0...v1.0.0
+[unreleased]: https://github.com/astrohelm/metaforge/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/astrohelm/metaforge/compare/v0.9.0...v1.0.0
 [0.9.0]: https://github.com/astrohelm/metaforge/compare/v0.8.0...v0.9.0
 [0.8.0]: https://github.com/astrohelm/metaforge/compare/v0.7.0...v0.8.0
 [0.7.0]: https://github.com/astrohelm/metaforge/compare/v0.6.0...v0.7.0
