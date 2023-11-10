@@ -4,6 +4,8 @@ const Forge = require('./lib/forge');
 const createError = require('./lib/error');
 Schema.modules = require('./modules');
 module.exports = Schema;
+module.exports.Schema = Schema;
+module.exports.default = Schema;
 
 const MODULE_ERROR = 'Module already exists: ';
 function Schema(plan, options = {}) {
