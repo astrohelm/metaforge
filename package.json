@@ -50,14 +50,14 @@
     "email": "sashapop101@gmail.com"
   },
   "devDependencies": {
-    "@types/node": "^20.8.10",
-    "eslint": "^8.52.0",
-    "eslint-config-astrohelm": "^1.1.1",
+    "@types/node": "^20.10.0",
+    "eslint": "^8.54.0",
+    "eslint-config-astrohelm": "^1.2.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-import": "^2.29.0",
     "eslint-plugin-prettier": "^5.0.1",
-    "prettier": "^3.0.3",
-    "typescript": "^5.2.2"
+    "prettier": "^3.1.0",
+    "typescript": "^5.3.2"
   },
   "dependencies": {
     "astropack": "^0.4.2"

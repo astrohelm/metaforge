@@ -2,15 +2,13 @@
 
 module.exports = { unionHandler, instanceOfArray, objectEntries, unifyResult };
 
-function objectEntries(t, s) {
-  if ((t === 'map' || t === 'any') && s?.constructor?.name === 'Map') return s.entries();
-  if (typeof s === 'object') return Object.entries(s);
-  return null;
+function objectEntries(sample) {
+  if (Array.isArray(sample) && sample[0]?.length === 2) return sample;
+  return sample?.constructor.name === 'Map' ? [...sample.entries()] : Object.entries(sample);
 }
 
-function instanceOfArray(type, sample) {
-  if (type === 'array') return Array.isArray(sample);
-  return sample?.constructor?.name === 'Set';
+function instanceOfArray(sample) {
+  return Array.isArray(sample) || sample?.constructor?.name === 'Set';
 }
 
 function unifyResult(result, createError) {

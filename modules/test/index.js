@@ -6,12 +6,10 @@ const prototypes = require('./tests');
 const DID_NOT_PASSED = 'Test failed: ';
 const RULE_NOT_EXIST = `Missing rule: `;
 const REQUIRE_SAMPLE = 'Recieved empty sample';
-module.exports = (schema, options) => {
-  schema.forge.attach('after', TestWrapper);
-  for (const [name, proto] of prototypes.entries()) schema.forge.attach(name, proto);
-  const schemaRules = options.rules ? new Map(objectEntries('any', options.rules)) : new Map();
-  const Error = schema.tools.Error;
-  function TestWrapper(plan) {
+module.exports = ({ forge }, { rules }) => {
+  for (const [name, proto] of prototypes.entries()) forge.set(name, proto);
+  const schemaRules = rules ? new Map(objectEntries(rules)) : new Map();
+  forge.set('after', function TestWrapper(plan, { Error }) {
     if (plan.$type === 'schema') return this.test;
     const planRules = plan?.$rules;
     const rules = Array.isArray(planRules) ? planRules : [planRules];
@@ -29,5 +27,5 @@ module.exports = (schema, options) => {
       }
       return Object.assign(errors, { valid: errors.length === 0 });
     };
-  }
+  });
 };

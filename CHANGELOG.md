@@ -2,6 +2,14 @@
 
 ## [Unreleased][unreleased]
 
+## [1.1.0][] - 2023-11-\*\*
+
+- Code quality improvements
+- Forge api changes
+- new Forge method setCopy, to create custom prototype from existing chain
+- Documentation updates
+- Test coverage improvements
+
 ## [1.0.0][] - 2023-11-10
 
 - ES modules support & typescript support
@@ -115,7 +123,8 @@
 - Default exotic types: Any, Undefined, JSON
 - Custom Errors
 
-[unreleased]: https://github.com/astrohelm/metaforge/compare/v1.0.0...HEAD
+[unreleased]: https://github.com/astrohelm/metaforge/compare/v1.1.0...HEAD
+[1.0.0]: https://github.com/astrohelm/metaforge/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/astrohelm/metaforge/compare/v0.9.0...v1.0.0
 [0.9.0]: https://github.com/astrohelm/metaforge/compare/v0.8.0...v0.9.0
 [0.8.0]: https://github.com/astrohelm/metaforge/compare/v0.7.0...v0.8.0

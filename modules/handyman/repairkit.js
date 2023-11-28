@@ -5,9 +5,8 @@ const unknown = { $type: 'unknown', $required: false };
 const SCHEMA_NOT_FOUND = 'Schema not found: ';
 const TYPE_NOT_FOUND = 'Received unknown type: ';
 const ARRAY_TYPE_NOT_FOUND = 'Cant parse type of received array: ';
-module.exports = function RepairKit(schema, namespace) {
+module.exports = function RepairKit({ forge, build }, tools, namespace) {
   const shorthands = { string, object, array, function: func };
-  const { tools, forge, child } = schema;
   return repair;
   function repair(plan, warn = tools.warn) {
     const type = Array.isArray(plan) ? 'array' : typeof plan;
@@ -49,7 +48,7 @@ module.exports = function RepairKit(schema, namespace) {
     const { $required = true, $id, ...fields } = plan; //? Schema wrapper #2
     if (plan.constructor.name === 'Schema') return { $type: 'schema', schema: plan, $required };
     if (!plan || plan.constructor.name !== 'Object') return unknown;
-    if ($id) return { $type: 'schema', $id, schema: child(fields), $required };
+    if ($id) return { $type: 'schema', $id, schema: build(fields), $required };
     if ('$type' in plan) {
       if (forge.has(plan.$type)) return '$required' in plan ? plan : { ...plan, $required };
       warn({ cause: TYPE_NOT_FOUND + plan.$type, sample: plan.$type, plan });

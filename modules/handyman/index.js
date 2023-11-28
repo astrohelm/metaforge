@@ -7,10 +7,22 @@ const TRAVERSE_PATH = ['$properties', '$items'];
 const entries = v => (v?.constructor?.name === 'Map' ? v.entries() : Object.entries(v));
 const copy = sample => (Array.isArray(sample) ? [...sample] : { ...sample });
 
-module.exports = (schema, options) => {
+module.exports = (factory, options) => (schema, tools) => {
+  const { build, warn } = tools;
   const namespace = options.namespace ? new Map(entries(options.namespace)) : new Map();
-  const [repair, unnamedSchemas] = [new RepairKit(schema, namespace), new Set()];
-  const [{ tools, modules }, { build, warn }] = [schema, schema.tools];
+  const [repair, unnamedSchemas] = [new RepairKit(factory, tools, namespace), new Set()];
+  tools.build = plan => {
+    const fixed = repair(plan);
+    const builded = build(fixed);
+    const { $id } = builded;
+    if (fixed.$calc) builded.$calc = fixed.$calc;
+    if (fixed.$type !== 'schema') return builded;
+    const [a, b] = [[...factory.modules.keys()], [...builded.modules.keys()]];
+    !a.every(key => b.includes(key)) && warn({ cause: MODULES_ERROR + $id, plan, sample: b });
+    if (!$id) return unnamedSchemas.add(builded), builded;
+    return namespace.set($id, builded), builded;
+  };
+
   schema.pull = name => {
     const schema = namespace.get(name);
     if (schema) return schema;
@@ -24,7 +36,7 @@ module.exports = (schema, options) => {
 
   schema.calculate = (sample, mode) => {
     const calc = schema.$calc;
-    let root = mode && typeof sample === 'object' ? copy(sample) : sample;
+    var root = mode && typeof sample === 'object' ? copy(sample) : sample;
     if (calc) root = typeof calc === 'function' ? calc(root, root) : calc;
     if (typeof root !== 'object') return root;
     return traverse(root, schema);
@@ -36,23 +48,12 @@ module.exports = (schema, options) => {
         for (const prop of key === '$properties' ? [...children.keys()] : Object.keys(data)) {
           const schema = children.get?.(prop) ?? children[prop] ?? children[0];
           const calc = schema.$calc;
-          if (calc) data[prop] = typeof calc === 'function' ? calc(data[prop], parent, root) : calc;
+          if (typeof calc === 'function') data[prop] = calc(data[prop], parent, root);
+          else if (calc) data[prop] = calc;
           if (typeof data[prop] === 'object') data[prop] = traverse(data[prop], schema);
         }
       }
       return data;
     }
-  };
-
-  tools.build = plan => {
-    const fixed = repair(plan);
-    const builded = build(fixed);
-    const { $id } = builded;
-    if (fixed.$calc) builded.$calc = fixed.$calc;
-    if (fixed.$type !== 'schema') return builded;
-    const [a, b] = [[...modules.keys()], [...builded.modules.keys()]];
-    !a.every(key => b.includes(key)) && warn({ cause: MODULES_ERROR + $id, plan, sample: b });
-    if (!$id) return unnamedSchemas.add(builded), builded;
-    return namespace.set($id, builded), builded;
   };
 };

@@ -128,7 +128,7 @@ class ForgePrototype {
  * @example <caption>Get prototype</caption>
  * forge.get('string'); // ForgePrototype {}
  */
-class Forge {
+class Forge extends Map {
   constructor(schema: Schema, prototypes?: Map<string, Proto>) {}
   /**
    * @description Will add your prototype to the end of the prototype chain
@@ -139,14 +139,30 @@ class Forge {
    * forge.attach('string', function Proto(plan, tools){ myField: 'test'  });
    * forge.attach('string', class Proto{ myField ='test'; constructor(plan, tools){};  });
    */
-  attach: (name: string, ...prototypes: Proto[]) => void;
+  set: (name: string, ...prototypes: Proto[]) => Forge;
   /**
-   * @description This method will build chain of prototype
-   * @example <caption>Get prototype</caption>
-   * forge.get('string'); // ForgePrototype {}
+   * @description Will copy prototype chain to other prototype chain
+   * @warning It will copy also all other modules prototypes
+   * @example <caption>Attach prototype</caption>
+   * forge.setCopy('string', 'myCustomString', { myField: 'test'  });
    */
-  get: (name: string) => { new (plan: Plan): ForgePrototype };
-  has: (name: string) => boolean;
+  setCopy: (from: string, to: string, ...prototypes: Proto[]) => Forge;
+
+  /**
+   * @description Returns prototype chain
+   * @warning This method can return after & before wrappers
+   * @example <caption>Get prototype chain</caption>
+   * const chain = forge.get('string'); // [{ kind: 'string' }, ...];
+   */
+  get: (name: string) => Proto[];
+
+  /**
+   * @description This method will build prototype chain into Type class object
+   * @example <caption>Get prototype</caption>
+   * const ForgePrototype = forge.build('string'); // ForgePrototype {}
+   * new ForgePrototype(plan, tools);
+   */
+  build: (name: string) => { new (plan: Plan): ForgePrototype };
 }
 
 type TModule = (schema: Schema, options: Options, plan: Plan) => void;

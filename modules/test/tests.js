@@ -2,16 +2,24 @@
 
 const { unionHandler, instanceOfArray, objectEntries } = require('./utils');
 
+const WRONG_TYPE = 'Type misconfiguration, expected type: ';
+const create = type => {
+  const invalid = WRONG_TYPE + type;
+  return function Scalar() {
+    this.test = sample => (typeof sample === type ? null : invalid);
+  };
+};
+
 module.exports = new Map(
   Object.entries({
     union: Union,
     set: Iterable,
     array: Iterable,
     tuple: Iterable,
-    boolean: Scalar,
-    string: Scalar,
-    number: Scalar,
-    bigint: Scalar,
+    boolean: create('boolean'),
+    string: create('string'),
+    number: create('number'),
+    bigint: create('bigint'),
     object: Struct,
     record: Struct,
     map: Struct,
@@ -19,14 +27,6 @@ module.exports = new Map(
     null: Null,
   }),
 );
-
-const WRONG_TYPE = 'Type misconfiguration, expected type: ';
-function Scalar() {
-  this.test = sample => {
-    if (typeof sample === this.$type) return null;
-    return WRONG_TYPE + this.$type;
-  };
-}
 
 function Null() {
   this.test = sample => {
@@ -48,7 +48,7 @@ const TUPLE_ERROR = 'Received items length does not match expected length';
 const INCOR_ERROR = 'Data type misconfiguration, expected: ';
 function Iterable() {
   this.test = (sample, path, isPartial) => {
-    if (!instanceOfArray(this.$type, sample)) return [INCOR_ERROR + this.$type];
+    if (!instanceOfArray(sample)) return [INCOR_ERROR + this.$type];
     const entries = [...sample];
     if (!entries.length && this.$required) return [EMPTY_ERROR];
     if (this.$isTuple && entries.length !== this.$items.length) return [TUPLE_ERROR];
@@ -70,21 +70,21 @@ function Struct() {
     const temp = this.$properties.get(prop);
     if (temp) return [prop, temp];
     if (typeof prop !== 'string') prop = String(prop);
-    for (const [pattern, value] of patterns) if (prop.match(pattern)) return [pattern, value];
+    for (var [pattern, value] of patterns) if (prop.match(pattern)) return [pattern, value];
     return [null, null];
   };
 
   this.test = (sample, path, isPartial) => {
     const requires = this.$requires.reduce((acc, prop) => acc.set(prop), new Map());
-    const entries = objectEntries(this.$type, sample);
+    const entries = objectEntries(sample);
     if (!entries) return [INCOR_ERROR + this.$type];
     if (!entries.length && this.$required) return [EMPTY_ERROR];
     const errors = [];
-    for (const [prop, sample] of entries) {
-      const [key, prototype] = pull(prop);
+    for (var [prop, item] of entries) {
+      var [key, prototype] = pull(prop);
       if (!key && this.$isRecord) errors.push(EXOTC_ERROR);
       if (!key) continue;
-      const result = prototype.test(sample, `${path}.${prop}`, isPartial);
+      var result = prototype.test(item, `${path}.${prop}`, isPartial);
       requires.delete(key), result.length && errors.push(...result);
     }
     !isPartial && requires.size && errors.push(RELIC_ERROR + [...requires.keys()].join(', '));
@@ -96,8 +96,8 @@ function Union() {
   this.test = (sample, path, isPartial) => {
     const [errors, handler] = [[], unionHandler(this.$condition, this.$types.length - 1)];
     for (let i = 0; i < this.$types.length; ++i) {
-      const result = this.$types[i].test(sample, path, isPartial);
-      const [message, deepErrors] = handler(result, i);
+      var result = this.$types[i].test(sample, path, isPartial);
+      var [message, deepErrors] = handler(result, i);
       if (message === 'ok') return [];
       if (deepErrors && deepErrors.length > 0) errors.push(...deepErrors);
       if (message !== 'continue') return errors.push(message), errors;

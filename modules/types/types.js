@@ -2,15 +2,22 @@
 
 const { brackets, jsdoc } = require('./utils');
 
+const create = type => {
+  const notRequiredType = `(${type}|undefined)`;
+  return function Scalar() {
+    this.toTypescript = () => (this.$required ? type : notRequiredType);
+  };
+};
+
 module.exports = new Map(
   Object.entries({
-    null: Scalar,
-    unknown: Scalar,
-    boolean: Scalar,
-    string: Scalar,
-    number: Scalar,
-    bigint: Scalar,
-    any: Scalar,
+    null: create('null'),
+    unknown: create('unknown'),
+    boolean: create('boolean'),
+    string: create('string'),
+    number: create('number'),
+    bigint: create('bigint'),
+    any: create('any'),
     enum: Enumerable,
     union: Union,
     array: Iterable,
@@ -22,10 +29,6 @@ module.exports = new Map(
     map: Struct,
   }),
 );
-
-function Scalar() {
-  this.toTypescript = () => (this.$required ? this.$type : `(${this.$type}|undefined)`);
-}
 
 function Enumerable() {
   this.toTypescript = () => {

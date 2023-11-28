@@ -41,8 +41,24 @@ test('Custom modules', () => {
   let counter = 0;
   const plugin = () => counter++;
   Schema.modules.set('first', plugin);
-  new Schema().register('second', plugin);
+  new Schema('string', { modules: [...Schema.modules, ['second', plugin]] });
   assert.strictEqual(counter, 2);
+});
+
+test('Forge', () => {
+  const time = new Date();
+  const plugin = schema => {
+    const forge = schema.forge;
+    forge.set('after', { createdAt: time });
+    forge.assign('text', 'string', { pg: 'text' });
+  };
+
+  const schema = new Schema('text', { modules: [...Schema.modules, ['test', plugin]] });
+  assert.strictEqual(schema.warnings.length, 0);
+  assert.strictEqual(schema.createdAt, time);
+  assert.strictEqual(schema.pg, 'text');
+  assert.strictEqual(schema.test('hello world').valid, true);
+  assert.strictEqual(schema.test(123).valid, false);
 });
 
 test('Example test', () => {
